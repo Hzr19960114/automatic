@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	                        <li>
+	                           	项目：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有项目</option>
+	                                <option value="2">流程测试项目</option>
+	                                <option value="1">测试项目一</option>
+	                            </select>
+	                        </li>
+							<li>
+	                           	事故状态：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有</option>
+	                                <option value="2">已发生-初始状态</option>
+	                                <option value="1">已发生-跟踪中-未处理</option>
+	                                <option value="2">已发生-跟踪中-处理中</option>
+	                                <option value="1">跟踪处理完成</option>
+	                            </select>
+	                        </li>
+	                        <li>
+	                           	事故等级：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有</option>
+	                                <option value="2">一级事故</option>
+	                                <option value="1">二级事故</option>
+	                                <option value="2">三级事故</option>
+	                                <option value="1">四级事故</option>
+	                                <option value="1">五级及以下事故</option>
+	                            </select>
+	                        </li>
+	                        <li>
+	                        	事故类型：
+	                        	<select name="accidentType">
+									<option value="">所有</option>
+									<option value="测试人员漏测">测试人员漏测</option>
+									<option value="紧急上线-未测试">紧急上线-未测试</option>
+									<option value="紧急上线-漏测">紧急上线-漏测</option>
+									<option value="开发私自上线-未测试">开发私自上线-未测试</option>
+									<option value="风险分析不足">风险分析不足</option>
+									<option value="项目文档不全">项目文档不全</option>
+									<option value="生产数据处理">生产数据处理</option>
+									<option value="需求或设计不合理">需求或设计不合理</option>
+									<option value="无法测试">无法测试</option>
+									<option value="系统配置异常">系统配置异常</option>
+									<option value="数据库异常">数据库异常</option>
+									<option value="网络异常">网络异常</option>
+									<option value="服务器硬件异常">服务器硬件异常</option>
+									<option value="外部原因异常">外部原因异常</option>
+									<option value="未知原因异常">未知原因异常</option>
+									<option value="其他异常">其他异常</option>
+								</select>
+	                        </li>
+	                        <li>
+								提交者：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+							<li class="select-time">
+								<label>时间： </label>
+								<div class="layui-input-inline">
+							        <input type="text" class="layui-input" id="test11" placeholder="yyyy年MM月dd日">
+								<span>-</span>
+							    </div>
+								<div class="layui-input-inline">
+							        <input type="text" class="layui-input" id="test12" placeholder="yyyy年MM月dd日">
+							    </div>
+							</li>
+	                        <li>
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-primary add" data-method="offset" data-type="auto">
+	                    <i class="fa fa-plus glyphicon glyphicon-plus"></i> 添加
+	                </a>
+	                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">
+	                    <i class="fa fa-edit glyphicon glyphicon-edit"></i> 修改
+	                </a>
+	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+	                    <i class="fa fa-remove glyphicon glyphicon-remove"></i> 删除
+	                </a>
+	                <a class="btn btn-info tuxingfenxi"  data-method="offset" data-type="auto">
+						<i class="fa fa-pie-chart glyphicon glyphicon-picture"></i> 图形分析
+					</a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+						<button class="btn btn-default btn-outline dropdown-toggle" title="Export data" data-toggle="dropdown" type="button" aria-expanded="true">
+							<i class="glyphicon glyphicon glyphicon-save"></i> 
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li data-type="csv">
+								<a href="javascript:void(0)">CSV</a>
+							</li>
+							<li data-type="txt">
+								<a href="javascript:void(0)">TXT</a>
+							</li>
+							<li data-type="doc">
+								<a href="javascript:void(0)">Word</a>
+							</li>
+							<li data-type="excel">
+								<a href="javascript:void(0)">Excel</a>
+							</li>
+						</ul>				
+					</div>
+	        	</div>
+		        <table class="layui-hide" id="test"></table>
+		        
+		        <div class="layui-row" id="popADD" style="display:none;">
+		    		<div class="layui-col-md10">
+		    			<form class="form-horizontal m" id="form-qaAccident-add" novalidate="novalidate">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">项目名称：</label>
+								<div class="col-sm-8">
+									<select id="projectId" name="projectId" class="form-control m-b">
+					                    <option value="2">流程测试项目</option>
+					                    <option value="1">测试项目一</option>
+					                </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">事故等级：</label>
+								<div class="col-sm-8">
+									<select class="form-control m-b" id="accidentLevel" name="accidentLevel">
+										<option value="一级事故">一级事故</option>
+										<option value="二级事故">二级事故</option>
+										<option value="三级事故">三级事故</option>
+										<option value="四级事故">四级事故</option>
+										<option value="五级及以下事故">五级及以下事故</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">事故状态：</label>
+								<div class="col-sm-8">
+									<select class="form-control m-b" id="accidentStatus" name="accidentStatus">
+										<option value="已发生-初始状态">已发生-初始状态</option>
+										<option value="已发生-跟踪中-未处理">已发生-跟踪中-未处理</option>
+										<option value="已发生-跟踪中-处理中">已发生-跟踪中-处理中</option>
+										<option value="跟踪处理完成">跟踪处理完成</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">事故发生时间：</label>
+								<div class="col-sm-8">
+									<input id="accidentTime" name="accidentTime" class="form-control" type="text" readonly="">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">事故类型：</label>
+								<div class="col-sm-8">
+									<select class="form-control m-b" id="accidentType" name="accidentType">
+										<option value="测试人员漏测">测试人员漏测</option>
+										<option value="紧急上线-未测试">紧急上线-未测试</option>
+										<option value="紧急上线-漏测">紧急上线-漏测</option>
+										<option value="开发私自上线-未测试">开发私自上线-未测试</option>
+										<option value="风险分析不足">风险分析不足</option>
+										<option value="项目文档不全">项目文档不全</option>
+										<option value="生产数据处理">生产数据处理</option>
+										<option value="需求或设计不合理">需求或设计不合理</option>
+										<option value="无法测试">无法测试</option>
+										<option value="系统配置异常">系统配置异常</option>
+										<option value="数据库异常">数据库异常</option>
+										<option value="网络异常">网络异常</option>
+										<option value="服务器硬件异常">服务器硬件异常</option>
+										<option value="外部原因异常">外部原因异常</option>
+										<option value="未知原因异常">未知原因异常</option>
+										<option value="其他异常">其他异常</option>
+								    </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">事故报告时间：</label>
+								<div class="col-sm-8">
+									<input id="reportTime" name="reportTime" class="form-control" type="text" readonly="">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">事故描述：</label>
+								<div class="col-sm-8">
+									<textarea id="accidentDescription" name="accidentDescription" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">事故分析：</label>
+								<div class="col-sm-8">
+									<textarea id="accidentAnalysis" name="accidentAnalysis" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">事故影响：</label>
+								<div class="col-sm-8">
+									<textarea id="accidentConsequence" name="accidentConsequence" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">纠正措施：</label>
+								<div class="col-sm-8">
+									<textarea id="correctiveAction" name="correctiveAction" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">解决时间：</label>
+								<div class="col-sm-8">
+									<input id="resolutionTime" name="resolutionTime" class="form-control" type="text" readonly="">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">解决处理人：</label>
+								<div class="col-sm-8">
+									<input id="resolutioner" name="resolutioner" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">预防措施：</label>
+								<div class="col-sm-8">
+									<textarea id="preventiveAction" name="preventiveAction" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">预防措施责任人：</label>
+								<div class="col-sm-8">
+									<input id="preventiver" name="preventiver" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">预防措施计划完成时间：</label>
+								<div class="col-sm-8">
+									<input id="preventivePlanDate" name="preventivePlanDate" class="form-control" type="text" readonly="">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">预防措施实际完成时间：</label>
+								<div class="col-sm-8">
+									<input id="preventiveOverDate" name="preventiveOverDate" class="form-control" type="text" readonly="">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">事故持续时间(分钟)：</label>
+								<div class="col-sm-8">
+									<input id="durationTime" name="durationTime" class="form-control" type="text" value="0">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">事故影响时间(分钟)：</label>
+								<div class="col-sm-8">
+									<input id="impactTime" name="impactTime" class="form-control" type="text" value="0">
+								</div>
+							</div>
+						</form>
+		    		</div>
+		    	</div>
+	        
+	        	<div class="layui-row" id="popChaKan" style="display:none;">
+		    		<div class="layui-col-md10">
+		    			<form class="form-horizontal m" id="form-queryGraph">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">项目：</label>
+								<div class="col-sm-8">
+									<select id="projectId" name="projectId" class="form-control m-b">
+					                    <option value="">所有项目</option>
+					                    <option value="2">流程测试项目</option>
+					                    <option value="1">测试项目一</option>
+					                </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">查询时间：</label>
+								<div class="col-sm-3">
+									<input type="text" class="form-control time-input" id="queryStartDate" name="queryStartDate" value="2020-07-02" readonly="" lay-key="1">
+								</div>
+								<div class="col-sm-1">
+									<label class="control-label">至</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" class="form-control time-input" id="queryEndDate" name="queryEndDate" value="2020-07-09" readonly="" lay-key="2">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">统计纬度：</label>
+								<div class="col-sm-8">
+									<div class="radio-box">
+									  <div class="iradio-blue checked">
+									  <input type="radio" id="Statistical0" name="Statistical" value="0" checked="checked">
+									  </div>
+									  <label>事故类型</label>
+									</div>
+									<div class="radio-box">
+									  <div class="iradio-blue">
+									  <input type="radio" id="Statistical1" name="Statistical" value="1">
+									  </div>
+									  <label>事故等级</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">数据纬度：</label>
+								<div class="col-sm-8">
+									<div class="radio-box">
+									  <div class="iradio-blue checked">
+									  <input type="radio" id="dataLatitude0" name="dataLatitude" value="0" checked="checked" >
+									  </div>
+									  <label>按次</label>
+									</div>
+									<div class="radio-box">
+									  <div class="iradio-blue">
+									  <input type="radio" id="dataLatitude1" name="dataLatitude" value="1" >
+									  </div>
+									  <label>影响时间</label>
+									</div>
+									<div class="radio-box">
+									  <div class="iradio-blue">
+									  <input type="radio" id="dataLatitude2" name="dataLatitude" value="2" >
+									  </div>
+									  <label>持续时间</label>
+								    </div>
+								</div>
+							</div>
+						</form>
+		    		</div>	
+		    	<div>
+	        </div>
+	    </div>
+	</div>
+	<script type="text/html" id="barDemo">
+	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		layui.use('table', function(){
+		  var table = layui.table;
+		  table.render({
+		    elem: '#test'
+		    //,url:'/demo/table/user/'
+		    ,cols: [[
+		      {type:'checkbox'}
+		      ,{field:'id', title: '项目名称'}
+		      ,{field:'username', title: '事故状态'}
+		      ,{field:'sex', title: '事故等级'}
+		      ,{field:'city', title: '发生时间'}
+		      ,{field:'sign', title: '事故类型'}
+		      ,{field:'experience', title: '事故描述'}
+		      ,{field:'score', title: '解决时间'}
+		      ,{field:'wealth', title: '操作', toolbar: '#barDemo'}
+		    ]]
+		    ,data: [{
+		      "id": "10001"
+		      ,"username": "杜甫"
+		      ,"email": "xianxin@layui.com"
+		      ,"sex": "男"
+		      ,"city": "浙江杭州"
+		      ,"sign": "人生恰似一场修行"
+		      ,"experience": "116"
+		      ,"score": "192.168.0.8"
+		      ,"classify": "108"
+		      ,"wealth": "2016-10-14"
+		    }, {
+		      "id": "10002"
+		      ,"username": "李白"
+		      ,"email": "xianxin@layui.com"
+		      ,"sex": "男"
+		      ,"city": "浙江杭州"
+		      ,"sign": "人生恰似一场修行"
+		      ,"experience": "12"
+		      ,"score": "192.168.0.8"
+		      ,"classify": "106"
+		      ,"wealth": "2016-10-14"
+		      ,"LAY_CHECKED": true
+		    }] 
+		    ,page: true
+		  });
+		});
+		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['添加生产事故登记','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popADD").html()
+				        ,btn: ['确定','取消']
+				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.add').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  		});
+  		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['查看图表','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popChaKan").html()
+				        ,btn: ['确定','取消']
+				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.tuxingfenxi').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  		});
+  		$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>
+	</body>
+</html>

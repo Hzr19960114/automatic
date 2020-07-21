@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	                    	<li>
+								岗位编码：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	                        <li>
+								岗位名称 ：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	                        <li>
+	                           	岗位状态：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有项目</option>
+	                                <option value="2">流程测试项目</option>
+	                                <option value="1">测试项目一</option>
+	                            </select>
+	                        </li>
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-primary add" data-method="offset" data-type="auto">
+	                    <i class="fa fa-plus glyphicon glyphicon-plus"></i> 添加
+	                </a>
+	                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">
+	                    <i class="fa fa-edit glyphicon glyphicon-edit"></i> 修改
+	                </a>
+	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+	                    <i class="fa fa-remove glyphicon glyphicon-remove"></i> 删除
+	                </a>
+	                <a class="btn btn-warning" onclick="$.operate.removeAll()">
+	                    <i class="fa fa-remove glyphicon glyphicon glyphicon-upload"></i> 导出
+	                </a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+	        		</div>
+	        	</div>
+		        <table class="layui-hide" id="test" lay-filter="demo"></table>
+		        <div class="layui-row" id="popUpdateTest" style="display: none;">
+		        		<div class="layui-col-md10">
+					        <form class="form-horizontal m" id="form-post-add" novalidate="novalidate">
+								<div class="form-group">
+									<label class="col-sm-3 control-label">岗位名称：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="postName" id="postName">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label ">岗位编码：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="postCode" id="postCode">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">显示顺序：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="postSort" id="postSort">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">岗位状态：</label>
+									<div class="col-sm-8">
+									    <div class="radio-box">
+											<div class="iradio-blue checked"><input type="radio" id="6" name="status" value="0" checked="checked" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+											<label for="6">正常</label>
+										</div>
+									    <div class="radio-box">
+											<div class="iradio-blue"><input type="radio" id="7" name="status" value="1" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+											<label for="7">停用</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">备注：</label>
+									<div class="col-sm-8">
+										<textarea id="remark" name="remark" class="form-control"></textarea>
+									</div>
+								</div>
+							</form>
+		        		</div>
+		        </div>
+	        </div>
+	    </div>
+	</div>
+	<script type="text/html" id="barDemo">
+	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">编辑</a>
+	  <a class="layui-btn layui-btn-xs" lay-event="edit">新增</a>
+	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		layui.use('laydate', function(){
+			var laydate = layui.laydate;
+			laydate.render({
+			    elem: '#test11'
+			    ,format: 'yyyy年MM月dd日'
+			});
+			laydate.render({
+			    elem: '#test12'
+			    ,format: 'yyyy年MM月dd日'
+			});
+		});
+		layui.use('table', function(){
+		  var table = layui.table;
+		  //《工具栏》
+		  //监听工具条
+		  table.on('tool(demo)', function(obj){
+		    var data = obj.data;
+		    if(obj.event === 'detail'){
+		      layer.msg('id：'+ data.id + ' 的查看操作');
+		    } else if(obj.event === 'del'){
+		      layer.confirm('真的删除行么', function(index){
+		        obj.del();
+		        layer.close(index);
+		      });
+		    } else if(obj.event === 'edit'){
+		      layer.alert('编辑行：<br>'+ JSON.stringify(data))
+		    }
+		  });
+		  
+		   var $ = layui.$, active = {
+		    getCheckData: function(){ //获取选中数据
+		      var checkStatus = table.checkStatus('test')
+		      ,data = checkStatus.data;
+		      layer.alert(JSON.stringify(data));
+		    }
+		    ,getCheckLength: function(){ //获取选中数目
+		      var checkStatus = table.checkStatus('test')
+		      ,data = checkStatus.data;
+		      layer.msg('选中了：'+ data.length + ' 个');
+		    }
+		    ,isAll: function(){ //验证是否全选
+		      var checkStatus = table.checkStatus('test');
+		      layer.msg(checkStatus.isAll ? '全选': '未全选')
+		    }
+		  };
+		    $('.demoTable .layui-btn').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+			  });
+		  //《/工具栏》
+		  table.render({
+		    elem: '#test'
+		    /*,url:'/demo/table/user/'*/
+		    ,cols: [[
+		      {type:'checkbox'}
+		      ,{field:'id', title: '岗位编号'}
+		      ,{field:'username', title: '岗位编码'}
+		      ,{field:'sex', title: '岗位名称', sort: true}
+		      ,{field:'city', title: '显示顺序', sort: true}
+		      ,{field:'city', title: '状态'}
+		      ,{field:'city', title: '创建时间', sort: true}
+		      ,{field:'city', title: '操作'}
+		    ]]
+		    ,data:[
+		    	{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    ]
+		    ,page: true
+		  });
+		});
+		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['添加测试任务调度','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+				        ,btn: ['确定','取消']
+				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.add').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  		});
+  		
+  		
+  		$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>
+	</body>
+</html>
+	

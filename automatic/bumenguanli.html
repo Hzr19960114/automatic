@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>菜单管理</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	                    	<li>
+								部门名称：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	                        <li>
+								权限字符：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	                        <li>
+	                           	部门状态：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有项目</option>
+	                                <option value="2">流程测试项目</option>
+	                                <option value="1">测试项目一</option>
+	                            </select>
+	                        </li>
+	                        
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-primary add" data-method="offset" data-type="auto">
+	                    <i class="fa fa-plus glyphicon glyphicon-plus"></i> 新增
+	                </a>
+	                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">
+	                    <i class="fa fa-edit glyphicon glyphicon-edit"></i> 修改
+	                </a>
+	                <a class="btn btn-info " onclick="$.operate.removeAll()">
+	                    <i class="fa fa-remove glyphicon glyphicon glyphicon-transfer"></i> 展开/折叠
+	                </a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+	        		</div>
+	        	</div>
+		        <table class="layui-hide" id="test" lay-filter="demoTreeTb">
+		        	
+		        </table>
+		        
+	        </div>
+	    </div>
+	</div>
+	<div class="layui-row" id="popUpdateTest" style="display:none;">
+	    <div class="layui-col-md10">
+				        <form class="form-horizontal m" id="form-dept-add" novalidate="novalidate">
+							<input id="treeId" name="parentId" type="hidden" value="100">
+							<div class="form-group">
+								<label class="col-sm-3 control-label ">上级部门：</label>
+								<div class="col-sm-8">
+									<input class="form-control" type="text" onclick="selectDeptTree()" id="treeName" readonly="true" value="LF总公司">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">部门名称：</label>
+								<div class="col-sm-8">
+									<input class="form-control" type="text" name="deptName" id="deptName">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">显示排序：</label>
+								<div class="col-sm-8">
+									<input class="form-control" type="text" name="orderNum">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">负责人：</label>
+								<div class="col-sm-8">
+									<input class="form-control" type="text" name="leader">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">联系电话：</label>
+								<div class="col-sm-8">
+									<input class="form-control" type="text" name="phone">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">邮箱：</label>
+								<div class="col-sm-8">
+									<input class="form-control" type="text" name="email">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">部门状态：</label>
+								<div class="col-sm-8">
+								    <div class="radio-box">
+										<div class="iradio-blue checked"><input type="radio" id="6" name="status" value="0" checked="checked" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+										<label for="6">正常</label>
+									</div>
+								    <div class="radio-box">
+										<div class="iradio-blue"><input type="radio" id="7" name="status" value="1" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+										<label for="7">停用</label>
+									</div>
+								</div>
+							</div>
+						</form>		
+	    	
+	    </div>
+	</div>   
+	<script type="text/html" id="barDemo" >
+	  <a class="btn btn-primary btn-xs" lay-event="detail"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+	  <a class="btn btn-info btn-xs" lay-event="edit"><i class=" glyphicon glyphicon-plus"></i>新增</a>
+	  <a class="btn btn-danger btn-xs" lay-event="del"> <i class="glyphicon glyphicon-remove"></i>删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		layui.config({
+				    base: 'js/'
+			}).use(['treeTable',"layer","table"], function () {
+				 	var $ = layui.jquery;
+				    var treeTable = layui.treeTable;
+				    var layer=layui.layer;
+				    var table=layui.table;
+				    
+/*				    // 渲染表格
+			        var renderTable = function () {//树桩表格参考文档：https://gitee.com/whvse/treetable-lay
+			            layer.load(2);
+			            treetable.render({
+			                treeColIndex: 1,//树形图标显示在第几列
+			                treeSpid: 0,//最上级的父级id
+			                treeIdName: 'permissionId',//id字段的名称
+			                treePidName: 'pid',//pid字段的名称
+			                treeDefaultClose: false,//是否默认折叠
+			                treeLinkage: true,//父级展开时是否自动展开所有子级
+			                elem: '#permissionTable',
+			                url: '${ctx}/permission/permissionTree',
+			                page: false,
+			                cols: [[
+			                    {type: 'numbers', title: '编号'},
+			                    {field: 'permissionName', title: '资源名称'},
+			                    {field: 'permissionUrl', title: '资源路径'},
+			                    {field: 'permissionType', title: '资源简介'},
+			                    {field: 'pid', title: '排序'},
+			                    {field: 'resType', title: '类型',
+			                    	templet: function(d){
+			                    		if(d.resType==0){
+			                    			return '菜单';
+			                    		}else{
+			                    			return '按钮';
+			                    		}
+			                        }	
+			                    },
+			                    {templet: complain, title: '操作'}
+			                ]],
+			                done: function () {
+			                    layer.closeAll('loading');
+			                }
+			            });
+			        };
+			        renderTable();*/
+        
+					var data = [{
+						id:"1",
+					    username: 'LF总公司',
+					    sex: '#',
+					    city: '#',
+					    sign: '#',
+					}, {
+					    pid: '1',
+					   	id:"1_1",
+					    username: '1',
+					    sex: '#',
+					    city: '#',
+					    sign: '#',
+					},{
+					    id:"2",
+					    username: '1',
+					    sex: '#',
+					    city: '#',
+					    sign: '#',
+					},{
+					    pid: '2',
+					    id:"2_1",
+					    username: '',
+					    sex: '#',
+					    city: '#',
+					    sign: '#',
+					}];
+		
+		// 渲染表格
+		var insTb = treeTable.render({
+		    elem: '#test',
+		    /*,url:'/demo/table/user/'*/
+		    data: data,  // 数据
+		    tree: {
+		        iconIndex: 1,    // 折叠图标显示在第几列
+		        isPidData: true  // 是否是pid形式数据
+		    },
+		    cols:[[
+		       {type:'checkbox'}
+		      ,{field:'id', title: '部门名称'}
+		      ,{field:'username', title: '排序'}
+		      ,{field:'sex', title: '状态'}
+		      ,{field:'city', title: '创建时间'}
+		      ,{field:'sign', title: '操作', toolbar: '#barDemo'}	
+		    ]] 
+		});
+		
+		   treeTable.on('tool(test)', function (obj) {
+			    var data = obj.data;
+			    if(obj.event === 'detail'){
+			      layer.msg('ID：'+ data.id + ' 的查看操作');
+			    } else if(obj.event === 'del'){
+			      layer.confirm('真的删除行么', function(index){
+			        obj.del();
+			        layer.close(index);
+			      });
+			    } else if(obj.event === 'edit'){
+			    	layer.open({
+				            type:1,
+				            title:"修改用户信息",
+				           	area: ['800px', '676px']
+				           	,shade: 0
+					        ,maxmin: true
+					        ,content:$("#popUpdateTest").html()
+					        ,btn: ['确定','关闭']
+					        ,btnAlign: 'r' 
+					        ,shade: 0 
+					        ,yes: function(){
+					          layer.closeAll();
+					        }
+			  	});
+			  }
+		});
+			
+		});
+	
+		
+		
+		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['添加菜单','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+				        ,btn: ['确定','关闭']
+				        ,btnAlign: 'r' 
+				        ,shade: 0 
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.add').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  	});
+  	$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>	
+</html>

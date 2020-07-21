@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	                        <li>
+								模板名称：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	                        <li>
+	                           	项目：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有项目</option>
+	                                <option value="2">流程测试项目</option>
+	                                <option value="1">测试项目一</option>
+	                            </select>
+	                        </li>
+	
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-info" id="expandAllBtn">
+	                    <i class="fa fa-exchange glyphicon glyphicon-sort"></i> 展开/折叠
+	                </a>
+	                <a class="btn btn-info daoru"  data-method="offset" data-type="auto">
+						<i class="fa fa-upload glyphicon glyphicon-cloud-upload"></i> 导入
+					</a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+	        		</div>
+	        	</div>
+		        <table class="layui-hide" id="test"  id="permissionTable"></table>
+		        
+		        <div class="layui-row" id="popUpdateTest" style="display:none;">
+		    		<div class="layui-col-md10">
+		    			<form id="importForm" enctype="multipart/form-data" class="mt20 mb10 layui-layer-wrap" style="">
+							<div class="col-xs-offset-1">
+								<input type="file" id="file" name="file">
+						
+								<div class="mt10 pt5">
+									<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs">
+									<i class="fa fa-file-excel-o"></i> 下载模板</a>
+								</div>
+								<font color="red" class="pull-left mt10">
+									提示：仅允许导入“xls”或“xlsx”格式文件！
+								</font>
+							</div>
+						</form>
+		    		</div>
+		    	</div>
+	        </div>
+	    </div>
+	</div>
+	<script type="text/html" id="barDemo">
+	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		layui.config({
+				base: 'js/'
+			}).use(['treeTable',"layer","table"], function () {
+				    var treeTable = layui.treeTable;
+				    var layer=layui.layer;
+				    var table=layui.table;
+					var data = [{
+						id:"1",
+					    id1: '测试管理',
+					    username: '1',
+					    sex: '#',
+					    city: '#',
+					}, {
+					    pid: '1',
+					   	id:"1_1",
+					    id1: '测试管理',
+					    username: '1',
+					    sex: '#',
+					    city: '#',
+					},{
+					    id:"2",
+					    id1: '测试管理',
+					    username: '1',
+					    sex: '#',
+					    city: '#',
+					},{
+					    pid: '2',
+					    id:"2_1",
+					    id1: '测试管理',
+					    username: '1',
+					    sex: '#',
+					    city: '#',
+					},
+					{
+					    pid: '2_1',
+					    id:"2_2",
+					    id1: '测试管理',
+					    username: '1',
+					    sex: '#',
+					    city: '#',
+					}];
+		
+		// 渲染表格
+		var insTb = treeTable.render({
+		    elem: '#test',
+		    data: data,  // 数据
+		    tree: {
+		        iconIndex: 1,    // 折叠图标显示在第几列
+		        isPidData: true  // 是否是pid形式数据
+		    },
+		    cols:[[
+		      {type:'radio'}
+		      ,{field:'id1', title: '模块名字'}
+		      ,{field:'username', title: '项目名称'}
+		      ,{field:'sex', title: '显示顺序'}
+			 ,{field:'city', title: '更新时间'}
+		      ,{align: 'center', toolbar: '#barDemo', title: '操作'}
+		    ]]
+		});
+		
+		var flag=true;
+		$('#expandAllBtn').click(function () {
+			if(flag){
+            	insTb.expandAll('#permissionTable');
+            	flag=false;
+			}else{
+	            insTb.foldAll('#permissionTable');
+	            flag=true;
+	        }
+       	});
+			
+		});
+		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+      				text=
+	      			layer.open({
+	      				title:['导入用例模块数据','color:#333333;background-color:#f8f8f8;']
+						,type: 1
+						,area: ['400px', '250px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+				        ,btn: ['确定','取消']
+				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.daoru').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  		});
+  		
+        
+  		$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>
+	</body>
+</html>

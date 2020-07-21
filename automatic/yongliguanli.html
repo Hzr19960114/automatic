@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	                    	<li>
+								用例名称：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	                        <li>
+								用例编号：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	                        <li>
+								更新者：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	                        <li>
+	                           	所有项目：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有项目</option>
+	                                <option value="2">流程测试项目</option>
+	                                <option value="1">测试项目一</option>
+	                            </select>
+	                        </li>
+	                        <li>
+								模块：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	                        <li>
+	                           	 用户类型：
+	                            <select name="caseType">
+	                                <option value="">所有</option>
+	                                <option value="0">HTTP接口</option>
+	                                <option value="0">Web Ul</option>
+	                                <option value="0">API驱动</option>
+	                                <option value="0">移动端</option>
+	                            </select>
+	                        </li>
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-primary add" data-method="offset" data-type="auto">
+	                    <i class="fa fa-plus glyphicon glyphicon-plus"></i> 添加
+	                </a>
+	                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">
+	                    <i class="fa fa-edit glyphicon glyphicon-edit"></i> 修改
+	                </a>
+	                <a class="btn btn-info btn-edit disabled" onclick="$.operate.copy()">
+	                    <i class="fa fa-clipboard  glyphicon glyphicon-file"></i> 复制用例
+	                </a>
+	                <a class="btn btn-info btn-copy disabled" onclick="$.operate.copy()">
+	                    <i class="fa fa-copy  glyphicon glyphicon-duplicate"></i> 批量复制用例
+	                </a>
+	                <a class="btn btn-info btn-edit disabled" onclick="$.operate.customFull()">
+	                    <i class="fa fa-list-ol  glyphicon glyphicon-th-list"></i> 用例步骤
+	                </a>
+	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+	                    <i class="fa fa-remove glyphicon glyphicon-remove"></i> 删除
+	                </a>
+	                <a class="btn btn-warning" onclick="$.table.exportExcel('formId')">
+	                    <i class="fa fa-download  glyphicon glyphicon-download-alt"></i> 导出
+	                </a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+	        		</div>
+	        	</div>
+	        	
+		        <table class="layui-table" id="test1" lay-filter="test1"></table>
+		        <div class="layui-row" id="popUpdateTest" style="display:none;">
+		    		<div class="layui-col-md10">
+		    			<form class="form-horizontal m" id="form-projectCase-add" novalidate="novalidate">
+				        	<input id="treeId" name="moduleId" type="hidden" value="3">
+				        	<div class="form-group">	
+								<label class="col-sm-3 control-label">项目名称：</label>
+								<div class="col-sm-8">
+									<select id="projectId" name="projectId" class="form-control m-b select2-hidden-accessible" onchange="initializeModuleTree()" tabindex="-1" aria-hidden="true">
+					                    <option value="2">流程测试项目</option>
+					                    <option value="1">测试项目一</option>
+					                </select>
+					            </div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">用例模块：</label>
+								<div class="col-sm-8">
+								    <input class="form-control" type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value="流程测试项目"/>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">用例名称：</label>
+								<div class="col-sm-8">
+									<input id="caseName" name="caseName" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">用例类型：</label>
+								<div class="col-sm-8">
+									<select class="form-control m-b select2-hidden-accessible" id="caseType" name="caseType" tabindex="-1" aria-hidden="true">
+										<option value="0">HTTP接口</option>
+										<option value="1">Web UI</option>
+										<option value="2">API驱动</option>
+										<option value="3">移动端</option>
+									</select>
+					            </div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">步骤失败：</label>
+								<div class="col-sm-8">
+								    <label>当前用例后续步骤 &nbsp;&nbsp;</label>
+									<div class="radio-box">
+										<input type="radio" id="31" name="failcontinue" value="0" checked="checked">
+										<label for="31">中断</label>
+								    </div>
+									<div class="radio-box">
+										<input type="radio" id="32" name="failcontinue" value="1">
+										<label for="32">继续</label>
+								    </div>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<textarea id="remark" name="remark" class="form-control"></textarea>
+								</div>
+							</div>
+						</form>
+		    		</div>
+	    		</div>
+	        </div>
+	    </div>
+	</div>
+	<script type="text/html" id="barDemo">
+	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		  layui.config({
+		    base: 'opTable'
+		  }).extend({
+		    opTable: '/opTable'
+		  }).use(['opTable'], function () {
+		    var opTable = layui.opTable.render({
+		      elem: '#test1'
+		      , id: '#test1'
+		      , toolbar: "#toolTableDemo"
+//		      , url: 'static/test.json'
+		      , cols: [[
+		        {field: 'id', title: 'ID', sort: true}
+		        , {field: 'username', title: '用户名', edit: true}
+		        , {field: 'city', title: '城市', edit: true}
+		      ]]
+		      ,data: [{
+			      "id": "10001"
+			      ,"username": "杜甫"
+			      ,"city": "浙江杭州"
+			    }],
+			
+		      /**
+		       * 展开显示表格 参数支持layui所有参数
+		       * @param itemData 当前行数据
+		       * @returns 支持 layui table 的所有配置参数
+		       *
+		       * 说明子表的 lay-filter='filter' 值与ID参数相同(去掉 # .)
+		       */
+		      openTable: function (itemData) {
+		
+		        return {
+		          elem: '#child' + itemData.LAY_INDEX
+		          , id: 'child' + itemData.LAY_INDEX
+//		          , url: 'static/test2.json'
+		          , page: true
+		          , where: {id: itemData.id}
+		          , cols: [[
+		            {field: 'id', title: 'ID', edit: true}
+		            , {field: 'username', title: '用户名'}
+		            , {field: 'logins', title: '登录名'}
+		            , {field: 'city', title: '城市'}
+		            , {field: 'classify', title: '职业'}
+		            , {field: 'wealth', title: '财产值'}
+		            , {field: 'experience', title: '人气值'}
+		            , {field: 'score', title: '分数'}
+		            , {title: '操作', toolbar: '#barDemo', width: 150}
+		          ]]
+		          ,data: [{
+			      "id": "10001"
+			      ,"username": "杜甫"
+			      ,"logins": "xianxin@layui.com"
+			      ,"city": "浙江杭州"
+			      ,"classify": "108"
+			      ,"wealth": "人生恰似一场修行"
+			      ,"experience": "116"
+			      ,"score": "192.168.0.8"
+			    }],
+		          done: function () {
+		            //  监听子表 修改
+		            layui.table.on('edit(' + 'child' + itemData.LAY_INDEX + ')', function (obj) {
+		              layer.msg(JSON.stringify(obj.data, null, "\t"));
+		            });
+		          }
+		        }
+		      }
+		      , openType: 1
+		    });
+		  });
+		
+		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['添加测试用例','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+				        ,btn: ['确定','取消']
+				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.add').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  		});
+  		
+  		$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+  		
+	</script>
+	</body>
+</html>

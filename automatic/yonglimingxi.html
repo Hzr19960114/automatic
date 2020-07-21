@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	                        <li>
+								项目：
+								<select id="projectId" name="projectId" onchange="setSchedulingList()">
+								    <option value="">所有项目</option>
+	                                <option value="2">流程测试项目</option>
+	                                <option value="1">测试项目一</option>
+	                            </select>
+							</li>
+							<li>
+								任务名称：
+								<select id="schedulingId" name="schedulingId">
+								    <option value="">所有</option>
+	                            </select>
+							</li>
+							<li>
+								用例标识：<input type="text" name="taskName"/>
+							</li>
+							<li>
+								用例名称：<input type="text" name="taskName"/>
+							</li>
+							<li>
+								用例状态：<select name="taskStatus">
+									<option value="">所有</option>
+									<option value="0">成功</option>
+									<option value="1">失败</option>
+									<option value="2">锁定</option>
+									<option value="3">执行中</option>
+									<option value="4">未执行</option>
+								</select>
+							</li>
+							<li class="select-time">
+								<label>时间： </label>
+								<div class="layui-input-inline">
+							        <input type="text" class="layui-input" id="test11" placeholder="开始时间">
+								<span>-</span>
+							    </div>
+								<div class="layui-input-inline">
+							        <input type="text" class="layui-input" id="test12" placeholder="结束时间">
+							    </div>
+							</li>
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-success add" data-method="offset" data-type="auto">
+						<i class="fa fa-forward glyphicon glyphicon-forward"></i> 执行全部非成功用例
+					</a>
+					<a class="btn btn-info btn-del btn-del disabled" onclick="runSelect()">
+						<i class="fa fa-play glyphicon glyphicon-play"></i> 执行所选用例
+					</a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+	        		</div>
+	        	</div>
+		        <table class="layui-hide" id="test"></table>
+		        
+		        <div class="layui-row" id="popUpdateTest" style="display:none;">
+		    		<div class="layui-col-md10">
+		    			<div>确认要运行所有非成功用例吗？</div>
+		    		</div>
+		    	</div>
+	        </div>
+	    </div>
+	</div>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		layui.use('laydate', function(){
+			var laydate = layui.laydate;
+			laydate.render({
+			    elem: '#test11'
+			    ,format: 'yyyy年MM月dd日'
+			});
+			laydate.render({
+			    elem: '#test12'
+			    ,format: 'yyyy年MM月dd日'
+			});
+		});
+		layui.use('table', function(){
+		  var table = layui.table;
+		  table.render({
+		    elem: '#test'
+		    ,url:'/demo/table/user/'
+		    ,cols: [[
+		      {type:'checkbox'}
+		      ,{field:'id', title: '用例标识'}
+		      ,{field:'username', title: '用例名称'}
+		      ,{field:'sex', title: '开始时间'}
+		      ,{field:'city', title: '结束时间'}
+		      ,{field:'sign', title: '用例状态', sort: true}
+		    ]]
+		    ,page: true
+		  });
+		});
+		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['系统提示','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['300px', '150px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+				        ,btn: ['确定','取消']
+				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.add').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  		});
+		$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>
+	</body>
+</html>

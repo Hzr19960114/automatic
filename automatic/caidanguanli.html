@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>菜单管理</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	
+	                        <li>
+								菜单名称：
+	                            <input type="text"  id="treeName" value=""/>
+	                        </li>
+							
+							<li>
+	                           	菜单状态：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有</option>
+	                                <option value="2">正常</option>
+	                                <option value="1">停用</option>
+	                            </select>
+	                       </li>
+							
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-primary add"data-method="offset" data-type="auto">
+	                    <i class="glyphicon glyphicon-plus"></i> 新增
+	                </a>
+	                 <a class="btn btn-success btn-edit disabled"data-method="offset" data-type="auto">
+	                    <i class="glyphicon glyphicon-edit"></i> 修改
+	                </a>
+	                 <a class="btn btn-info" data-method="offset" data-type="auto" id="zhankai">
+	                    <i class="glyphicon glyphicon-sort"></i> 展开/折叠
+	                </a>
+					<div class="columns columns-right btn-group pull-right">
+
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+						<button type="button" aria-label="columns" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+							<i class="glyphicon glyphicon-list"></i>
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu columns" role="menu">
+							<li role="menuitem"><label><input type="checkbox" checked="checked" data-field="menuName" value="menuName"> 菜单名称</label></li>
+							<li role="menuitem"><label><input type="checkbox" checked="checked" data-field="orderNum" value="orderNum"> 排序</label></li>
+							<li role="menuitem"><label><input type="checkbox" checked="checked" data-field="url" value="url"> 请求地址</label></li>
+							<li role="menuitem"><label><input type="checkbox" checked="checked" data-field="menuType" value="menuType"> 类型</label></li>
+							<li role="menuitem"><label><input type="checkbox" checked="checked" data-field="visible" value="visible"> 可见</label></li>
+							<li role="menuitem"><label><input type="checkbox" checked="checked" data-field="perms" value="perms"> 权限标识</label></li>
+							<li role="menuitem"><label><input type="checkbox" checked="checked" data-field="undefined" value="undefined"> 操作</label></li>
+						</ul>					
+					</div>
+				</div>
+		        <table class="layui-hide" id="test" lay-filter="demoTreeTb"></table>
+	        </div>
+	    </div>
+	</div>
+	<div class="layui-row" id="popUpdateTest" style="display:none;">
+	    <div class="layui-col-md10">
+	    	<form class="form-horizontal m" id="form-menu-add" novalidate="novalidate">
+			<input id="treeId" name="parentId" type="hidden" value="0">
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">上级菜单：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" onclick="selectMenuTree()" id="treeName" readonly="true" value="主目录">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">菜单类型：</label>
+				<div class="col-sm-8">
+					<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="menuType" value="M" ></div> 目录 </label> 
+					<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="menuType" value="C" ></div> 菜单 </label> 
+					<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="menuType" value="F"></div> 按钮 </label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">菜单名称：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="menuName" id="menuName">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">请求地址：</label>
+				<div class="col-sm-8">
+					<input id="url" name="url" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">权限标识：</label>
+				<div class="col-sm-8">
+					<input id="perms" name="perms" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">显示排序：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="orderNum">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">图标：</label>
+				<div class="col-sm-8">
+					<input id="icon" name="icon" class="form-control" type="text" placeholder="选择图标">
+                    <div class="ms-parent" style="width: 100%;">
+                        <div class="icon-drop animated flipInX" style="max-height: 200px; overflow-y: auto;">
+                            <div>
+								<iframe src="tubiao.html" style="width: 100%;border: 0px;"></iframe>
+							</div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">菜单状态：</label>
+				<div class="col-sm-8">
+				    <div class="radio-box">
+						<div class="iradio-blue checked"><input type="radio" id="4" name="visible" value="0" checked="checked"> </div>
+						<label for="4" class="">显示</label>
+					</div>
+				    <div class="radio-box">
+						<div class="iradio-blue"><input type="radio" id="5" name="visible" value="1" ></div>
+						<label for="5">隐藏</label>
+					</div>
+				</div>
+			</div>
+		</form>
+	    </div>
+	</div>   
+	<script type="text/html" id="barDemo" >
+	  <a class="btn btn-primary btn-xs" lay-event="detail"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+	  <a class="btn btn-info btn-xs" lay-event="edit"><i class=" glyphicon glyphicon-plus"></i>新增</a>
+	  <a class="btn btn-danger btn-xs" lay-event="del"> <i class="glyphicon glyphicon-remove"></i>删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		
+	
+		
+		layui.config({
+				    base: 'js/'
+			}).use(['treeTable',"layer","table"], function () {
+				    var treeTable = layui.treeTable;
+				    var layer=layui.layer;
+				    var table=layui.table;
+					var data = [{
+						id:"1",
+					    id1: '测试管理',
+					    username: '1',
+					    sex: '#',
+					    city: '目录',
+					    city2: '显示',
+					    sign: '',
+					}, {
+					    pid: '1',
+					   	id:"1_1",
+					    id1: ' 用例管理',
+					    username: '1',
+					    sex: '/testmanagmt/projectCase	',
+					    city: '菜单',
+					    city2: '显示',
+					    sign: 'testmanagmt:projectCase:view	',
+					},{
+					    id:"2",
+					    id1: ' 测试执行',
+					    username: '2',
+					    sex: '#',
+					    city: '目录',
+					    city2: '显示',
+					    sign: '',
+					},{
+					    pid: '2',
+					    id:"2_1",
+					    id1: '任务调度',
+					    username: '1',
+					    sex: '/testexecution/taskSchedu',
+					    city: '菜单',
+					    city2: '目录',
+					    sign: 'testexecution:taskScheduling:view',
+					}];
+		
+		// 渲染表格
+		var insTb = treeTable.render({
+		    elem: '#test',
+		    data: data,  // 数据
+		    tree: {
+		        iconIndex: 1,    // 折叠图标显示在第几列
+		        isPidData: true  // 是否是pid形式数据
+		    },
+		    cols:[[
+		      {type:'radio'}
+		      ,{field:'id1', title: '菜单名称'}
+		      ,{field:'username', title: '排序'}
+		      ,{field:'sex', title: '请求地址'}
+			 ,{field:'city', title: '类型',width:70}
+		      ,{field:'city2', title: '可见',width:70}
+		      ,{field:'sign', title: '权限标识'}
+		      ,{align: 'center', toolbar: '#barDemo', title: '操作'}
+		    ]]
+		});
+		
+		   treeTable.on('tool(test)', function (obj) {
+			    var data = obj.data;
+			    if(obj.event === 'detail'){
+			     layer.open({
+				            type:1,
+				            title:"修改用户信息",
+				           	area: ['800px', '676px']
+				           	,shade: 0
+					        ,maxmin: true
+					        ,content:$("#popUpdateTest").html()
+					        ,btn: ['确定','关闭']
+					        ,btnAlign: 'r' 
+					        ,shade: 0 
+					        ,yes: function(){
+					          layer.closeAll();
+					        }
+			  	});
+			    } else if(obj.event === 'del'){
+			      layer.confirm('真的删除行么', function(index){
+			        obj.del();
+			        layer.close(index);
+			      });
+			    } else if(obj.event === 'edit'){
+			    	layer.open({
+				            type:1,
+				            title:"修改用户信息",
+				           	area: ['800px', '676px']
+				           	,shade: 0
+					        ,maxmin: true
+					        ,content:$("#popUpdateTest").html()
+					        ,btn: ['确定','关闭']
+					        ,btnAlign: 'r' 
+					        ,shade: 0 
+					        ,yes: function(){
+					          layer.closeAll();
+					        }
+			  	});
+			  }
+		});
+		
+		var flag=true;
+		$('#zhankai').click(function () {
+            if(flag){
+            	insTb.expandAll('#test');
+            	flag=false;
+            }else{
+            	insTb.foldAll('#test');
+            	flag=true;
+            }
+        });
+			
+		});
+	
+		
+		
+		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['添加菜单','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+				        ,btn: ['确定','关闭']
+				        ,btnAlign: 'r' 
+				        ,shade: 0 
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.add').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  	});
+  	$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>	
+</html>

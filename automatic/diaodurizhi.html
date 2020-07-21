@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>调度日志</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	
+	                        <li>
+								任务名称：
+	                            <input type="text"  id="treeName"  value=""/>
+	                        </li>
+	
+	                        <li>
+	                           	方法名称：
+	                            <input type="text"  id="treeName" value=""/>
+	                        </li>
+							
+							 <li>
+	                           	执行状态：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有</option>
+	                                <option value="2">成功</option>
+	                                <option value="1">失败</option>
+	                            </select>
+	                        </li>
+	                        
+	                        <li class="select-time">
+								<label>执行时间： </label>
+								<div class="layui-input-inline">
+							        <input type="text" class="layui-input" id="test11" placeholder="开始时间">
+								<span>-</span>
+							    </div>
+								<div class="layui-input-inline">
+							        <input type="text" class="layui-input" id="test12" placeholder="结束时间">
+							    </div>
+							</li>
+							
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+	                    <i class="glyphicon glyphicon-remove"></i> 删除
+	                </a>
+	                <a class="btn btn-danger" onclick="$.operate.removeAll()">
+	                    <i class="glyphicon glyphicon-trash"></i> 清空
+	                </a>
+	                <a class="btn btn-warning" onclick="$.operate.removeAll()">
+	                    <i class="glyphicon glyphicon-save"></i> 导出
+	                </a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+		        			        		
+					</div>
+				</div>
+		        <table class="layui-hide" id="test"></table>
+	        </div>
+	    </div>
+	</div>
+	<script type="text/html" id="barDemo">
+	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		layui.use('laydate', function(){
+			var laydate = layui.laydate;
+			laydate.render({
+			    elem: '#test11'
+			    ,format: 'yyyy年MM月dd日'
+			});
+			laydate.render({
+			    elem: '#test12'
+			    ,format: 'yyyy年MM月dd日'
+			});
+		});
+		
+		layui.use('table', function(){
+		  var table = layui.table;
+		  table.render({
+		    elem: '#test'
+		    ,cols: [[
+		      {type:'checkbox'}
+		      ,{field:'id', title: '日志编号'}
+		      ,{field:'username', title: '任务名称',sort: true}
+		      ,{field:'sex', title: '任务组名',sort: true}
+		      ,{field:'city', title: '方法名称'}
+		      ,{field:'sign', title: '方法参数'}
+		      ,{field:'experience', title: '日志信息'}
+		      ,{field:'score', title: '状态'}
+		      ,{field:'classify', title: '创建时间',sort: true}
+		      ,{field:'wealth3', title: '操作',toolbar: '#barDemo'}
+		    ]]
+		     ,data: [{
+		      "id": "10001"
+		      ,"username": "杜甫"
+		      ,"email": "xianxin@layui.com"
+		      ,"sex": "男"
+		      ,"city": "浙江杭州"
+		      ,"sign": "人生恰似一场修行"
+		      ,"experience": "116"
+		      ,"score": "192.168.0.8"
+		      ,"classify": "108"
+		      ,"wealth": "2016-10-14"
+		      ,"wealth1": "2016-10-14"
+		      ,"wealth2": "2016-10-14"
+		    }]
+		    ,page: true
+		  });
+		});
+		$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>	
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+							<li>
+								登录地址：<input type="text" name="taskName"/>
+							</li>
+							
+							<li>
+								登录名称：<input type="text" name="taskName"/>
+							</li>
+
+							<li>
+								登录状态：<select name="taskStatus">
+									<option value="">所有</option>
+									<option value="0">成功</option>
+									<option value="1">失败</option>
+								</select>
+							</li>
+
+							<li class="select-time">
+								<label>登录时间： </label>
+								<div class="layui-input-inline">
+							        <input type="text" class="layui-input" id="test11" placeholder="yyyy年MM月dd日">
+								<span>-</span>
+							    </div>
+								<div class="layui-input-inline">
+							        <input type="text" class="layui-input" id="test12" placeholder="yyyy年MM月dd日">
+							    </div>
+							</li>
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+	                    <i class="fa fa-remove glyphicon glyphicon-remove"></i> 删除
+	                </a>
+	                <a class="btn btn-danger btn-del btn-del" onclick="$.operate.removeAll()">
+	                    <i class="fa fa-remove glyphicon glyphicon-remove"></i> 清空
+	                </a>
+	                <a class="btn btn-warning" onclick="$.operate.removeAll()">
+	                    <i class="fa fa-remove glyphicon glyphicon glyphicon-upload"></i> 导出
+	                </a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+	        		</div>
+	        	</div>
+		        <table class="layui-hide" id="test" lay-filter="demo"></table>
+		        <!--新增弹出框-->
+		        <div class="layui-row" id="popUpdateTest" style="display: none;">
+		        		<div class="layui-col-md10">
+		        			
+		        		</div>
+		        </div>
+	        </div>
+	    </div>
+	</div>
+	<script type="text/html" id="barDemo">
+	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">编辑</a>
+	  <a class="layui-btn layui-btn-xs" lay-event="edit">新增</a>
+	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		layui.use('laydate', function(){
+			var laydate = layui.laydate;
+			laydate.render({
+			    elem: '#test11'
+			    ,format: 'yyyy年MM月dd日'
+			});
+			laydate.render({
+			    elem: '#test12'
+			    ,format: 'yyyy年MM月dd日'
+			});
+		});
+		layui.use('table', function(){
+		  var table = layui.table;
+		  //《工具栏》
+		  //监听工具条
+		  table.on('tool(demo)', function(obj){
+		    var data = obj.data;
+		    if(obj.event === 'detail'){
+		      layer.msg('id：'+ data.id + ' 的查看操作');
+		    } else if(obj.event === 'del'){
+		      layer.confirm('真的删除行么', function(index){
+		        obj.del();
+		        layer.close(index);
+		      });
+		    } else if(obj.event === 'edit'){
+		      layer.alert('编辑行：<br>'+ JSON.stringify(data))
+		    }
+		  });
+		  
+		   var $ = layui.$, active = {
+		    getCheckData: function(){ //获取选中数据
+		      var checkStatus = table.checkStatus('test')
+		      ,data = checkStatus.data;
+		      layer.alert(JSON.stringify(data));
+		    }
+		    ,getCheckLength: function(){ //获取选中数目
+		      var checkStatus = table.checkStatus('test')
+		      ,data = checkStatus.data;
+		      layer.msg('选中了：'+ data.length + ' 个');
+		    }
+		    ,isAll: function(){ //验证是否全选
+		      var checkStatus = table.checkStatus('test');
+		      layer.msg(checkStatus.isAll ? '全选': '未全选')
+		    }
+		  };
+		    $('.demoTable .layui-btn').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+			  });
+		  //《/工具栏》
+		  table.render({
+		    elem: '#test'
+		    /*,url:'/demo/table/user/'*/
+		    ,cols: [[
+		      {type:'checkbox'}
+		      ,{field:'id', title: '访问编号'}
+		      ,{field:'username', title: '登录名称'}
+		      ,{field:'sex', title: '登录地址', sort: true}
+		      ,{field:'city', title: '登陆地点'}
+		      ,{field:'sign', title: '浏览器'}
+		      ,{field:'experience', title: '操作系统'}
+		      ,{field:'score', title: '登录状态'}
+		      ,{field:'classify', title: '操作信息'}
+		      ,{field:'wealth', title: '登录时间', sort: true}
+		    ]]
+		    ,data:[
+		    	{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
+		    ]
+		    ,page: true
+		  });
+		});
+		$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>
+	</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	                        <li>
+	                           	项目：
+	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                                <option value="">所有项目</option>
+	                                <option value="2">流程测试项目</option>
+	                                <option value="1">测试项目一</option>
+	                            </select>
+	                        </li>
+	
+	                        <li>
+								调度名称：
+	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                        </li>
+	
+	                        <li>
+	                           	 客户端：
+	                            <select name="caseType">
+	                                <option value="">全部</option>
+	                                <option value="0">【120】 120.27.93.156</option>
+	                            </select>
+	                        </li>
+	
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-primary add" data-method="offset" data-type="auto">
+	                    <i class="fa fa-plus glyphicon glyphicon-plus"></i> 添加
+	                </a>
+	                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">
+	                    <i class="fa fa-edit glyphicon glyphicon-edit"></i> 修改
+	                </a>
+	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+	                    <i class="fa fa-remove glyphicon glyphicon-remove"></i> 删除
+	                </a>
+	                <a class="btn btn-info rizhi" data-method="offset" data-type="auto">
+						<i class="fa fa-eye glyphicon glyphicon-eye-open"></i> 查看日志
+					</a>
+					<a class="btn btn-info shangchuan" data-method="offset" data-type="auto">
+						<i class="fa fa-cloud-upload glyphicon glyphicon-cloud-upload"></i> 上传驱动包
+					</a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+	        		</div>
+	        	</div>
+	        	
+		        <table class="layui-hide" id="test"></table>
+		        
+		        <div class="layui-row" id="popADD" style="display:none;">
+		    		<div class="layui-col-md10">
+		    			<form class="form-horizontal m" id="form-taskScheduling-add" novalidate="novalidate">
+				           <div class="form-group">	
+								<label class="col-sm-3 control-label">调度名称：</label>
+								<div class="col-sm-8">
+									<input id="schedulingName" name="schedulingName" class="form-control" type="text">
+								</div>
+						   </div>
+				           <div class="form-group">	
+								<label class="col-sm-3 control-label">项目名称：</label>
+								<div class="col-sm-8">
+									<select id="projectId" name="projectId" class="form-control m-b" onchange="initializeChildren()">
+					                    <option value="2">流程测试项目</option>
+					                    <option value="1">测试项目一</option>
+					                </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">测试计划：</label>
+								<div class="col-sm-8">
+									<select id="planId" name="planId" class="form-control m-b">
+					                    <option value="3">流程测试计划</option>
+					                </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">客户端：</label>
+								<div class="col-sm-8">
+									<select id="clientId" name="clientId" class="form-control m-b" onchange="setDriverPathList()">
+					                    
+					                </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">客户端测试驱动桩路径：</label>
+								<div class="col-sm-8">
+									<select id="clientDriverPath" name="clientDriverPath" class="form-control m-b">
+					                    
+					                </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">客户端执行线程数：</label>
+								<div class="col-sm-8">
+									<input id="exThreadCount" name="exThreadCount" class="form-control" type="text" value="1">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">任务类型：</label>
+								<div class="col-sm-8">
+									<label class="radio-box"> <div class="iradio-blue checked"><input type="radio" name="taskType" value="0" checked="checked"></div> 接口 </label> 
+									<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="taskType" value="1"></div> Web UI </label> 
+									<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="taskType" value="2"></div> 移动端 </label>
+								</div>
+							</div>
+							<div class="form-group" id="divBrowserType" style="display:none;">	
+								<label class="col-sm-3 control-label">浏览器类型：</label>
+								<div class="col-sm-8">
+									<label class="radio-box"> <div class="iradio-blue checked"><input type="radio" name="browserType" value="0" checked="checked" style="position: absolute; opacity: 0;"></div> IE </label> 
+									<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="browserType" value="1"></div> 火狐 </label> 
+									<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="browserType" value="2"></div> 谷歌 </label>
+									<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="browserType" value="3"></div> Edge </label>
+								</div>
+							</div>			
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">任务超时时间(分钟)：</label>
+								<div class="col-sm-8">
+									<input id="taskTimeout" name="taskTimeout" class="form-control" type="text" value="60">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">Cron执行表达式：</label>
+								<div class="col-sm-8">
+									<input id="cronExpression" name="cronExpression" class="form-control placeholder" type="text" placeholder="每天凌晨3点45分运行，示例：0 45 3 * * ? ">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">执行策略：</label>
+								<div class="col-sm-8">
+									<label class="radio-box"> <div class="iradio-blue checked"><input type="radio" name="misfirePolicy" value="3" checked="checked"></div> 默认Cron执行 </label> 
+									<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="misfirePolicy" value="2"></div> 按Cron自动执行一次 </label> 
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">任务状态：</label>
+								<div class="col-sm-8">
+									<div class="radio-box">
+										<div class="iradio-blue checked"><input type="radio" id="8" name="status" value="0" checked="checked"></div>
+										<label for="8">正常</label>
+									</div>
+									<div class="radio-box">
+										<div class="iradio-blue"><input type="radio" id="9" name="status" value="1"></div>
+										<label for="9">暂停</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">邮件通知逻辑：</label>
+								<div class="col-sm-8">
+								    <label class="radio-box"> <div class="iradio-blue checked"><input type="radio" name="emailSendCondition" value="-1" checked="checked"></div> 不通知 </label> 
+									<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="emailSendCondition" value="0"></div> 默认 </label> 
+									<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="emailSendCondition" value="1"></div> 任务成功 </label> 
+									<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="emailSendCondition" value="2"></div> 任务失败 </label>
+								</div>
+							</div>
+							<div class="form-group" id="divEmailAddress" style="display:none;">
+								<label class="col-sm-3 control-label">邮件通知地址：</label>
+								<div class="col-sm-8">
+									<textarea id="emailAddress" name="emailAddress" class="form-control" placeholder="多个邮件地址用;分隔"></textarea>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">jenkins名称：</label>
+								<div class="col-sm-8">
+									<textarea id="buildingLink" name="buildingLink" class="form-control" placeholder="Jenkins中的项目名称，多个以;分隔"></textarea>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">远程执行Shell：</label>
+								<div class="col-sm-8">
+									<textarea id="remoteShell" name="remoteShell" class="form-control" placeholder="格式：服务器IP;服务器用户名;服务器密码;ssh端口;Shell命令; 例：10.218.88.88;root;123456;22;cd /home/tomcat-7.0-7080/bin&amp;&amp;./restart.sh;"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<textarea id="remark" name="remark" class="form-control"></textarea>
+								</div>
+							</div>
+						</form>
+		    		</div>
+		    	</div>
+	        	
+	        	<div class="layui-row" id="popShangChuan" style="display:none;">
+		    		<div class="layui-col-md10">
+		    			<form class="form-horizontal m" id="form-uploadJar" enctype="multipart/form-data" novalidate="novalidate">
+				        	<div class="form-group">	
+								<label class="col-sm-11 control-label" style="color:#f7a54a">仅支持.jar或是.py后缀文件</label>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">选择驱动：</label>
+								<div class="col-sm-8">
+				                    <input type="file" name="file" id="file">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">客户端IP：</label>
+								<div class="col-sm-8">
+									<select id="clientIp" name="clientIp" class="form-control m-b">
+					                    
+					                </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">驱动路径：</label>
+								<div class="col-sm-8">
+									<select id="clientDriverPath" name="clientDriverPath" class="form-control m-b">
+					                    
+					                </select>
+								</div>
+							</div>
+						</form>
+		    		</div>
+		    	</div>
+	        
+	        	<div class="layui-row" id="popChaKan" style="display:none;">
+		    		<div class="layui-col-md10">
+		    			<form class="form-horizontal m" id="form-queryLog" novalidate="novalidate">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">查询时间：</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control time-input" id="queryDate" placeholder="查询时间" name="queryDate" value="2020-07-09" lay-key="1">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">客户端：</label>
+								<div class="col-sm-8">
+									<select id="clientIp" name="clientIp" class="form-control m-b">
+					                    
+					                </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">日志级别：</label>
+								<div class="col-sm-8">
+								  <div class="radio-box">
+									<div class="iradio-blue checked"><input type="radio" id="logLevel" name="logLevel" value="ERROR" checked="checked"></div>
+									<label style="color:#DC143C">异常</label>
+								  </div>
+								  <div class="radio-box">
+								  	<div class="iradio-blue"><input type="radio" id="logLevel" name="logLevel" value="WARN"></div>
+									<label style="color:#FF8C00">警告</label>
+								  </div>
+								  <div class="radio-box">
+								  	<div class="iradio-blue"><input type="radio" id="logLevel" name="logLevel" value="INFO"></div>
+									<label style="color:#1E90FF">全部</label>
+								  </div>
+								</div>
+							</div>
+						</form>
+		    		</div>
+		    	</div>
+	        </div>
+	    </div>
+	</div>
+	<script type="text/html" id="barDemo">
+	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		layui.use('table', function(){
+		  var table = layui.table;
+		  table.render({
+		    elem: '#test'
+		    //,url:'/demo/table/user/'
+		    ,cols: [[
+		      {type:'checkbox'}
+		      ,{field:'id', title: '调度名称', sort: true}
+		      ,{field:'username', title: '项目名称'}
+		      ,{field:'sex', title: '计划名称'}
+		      ,{field:'city', title: '调度策略'}
+		      ,{field:'sign', title: 'Cron'}
+		      ,{field:'experience', title: '客户端IP'}
+		      ,{field:'score', title: '线程'}
+		      ,{field:'classify', title: '任务状态'}
+		      ,{field:'wealth', title: '操作', toolbar: '#barDemo'}
+		    ]]
+		    ,data: [{
+		      "id": "10001"
+		      ,"username": "杜甫"
+		      ,"email": "xianxin@layui.com"
+		      ,"sex": "男"
+		      ,"city": "浙江杭州"
+		      ,"sign": "人生恰似一场修行"
+		      ,"experience": "116"
+		      ,"score": "192.168.0.8"
+		      ,"classify": "108"
+		      ,"wealth": "2016-10-14"
+		    }, {
+		      "id": "10002"
+		      ,"username": "李白"
+		      ,"email": "xianxin@layui.com"
+		      ,"sex": "男"
+		      ,"city": "浙江杭州"
+		      ,"sign": "人生恰似一场修行"
+		      ,"experience": "12"
+		      ,"score": "192.168.0.8"
+		      ,"classify": "106"
+		      ,"wealth": "2016-10-14"
+		      ,"LAY_CHECKED": true
+		    }] 
+		    ,page: true
+		  });
+		});
+		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['添加测试任务调度','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['820px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popADD").html()
+				        ,btn: ['确定','取消']
+				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.add').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  		});
+  		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['上传驱动包','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '500px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popShangChuan").html()
+				        ,btn: ['确定','取消']
+				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.shangchuan').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  		});
+  		layui.use('layer', function(){ //独立版的layer无需执行这一句
+			var active = {
+				offset: function(othis){
+      				var type = othis.data('type');
+	      			layer.open({
+	      				title:['查看日志','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,content:$("#popChaKan").html()
+				        ,btn: ['确定','取消']
+				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+    			}
+			}
+			$('.rizhi').on('click', function(){
+			    var othis = $(this), method = othis.data('method');
+			    active[method] ? active[method].call(this, othis) : '';
+			});
+  		});
+  		$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>
+	</body>
+</html>
