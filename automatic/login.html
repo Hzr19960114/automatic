@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    
+    <title>LuckyFrame开源测试平台</title>
+    <meta name="keywords" content="开源测试工具,自动化测试平台,开源测试平台,自动化测试框架,luckyframe">
+    <meta name="description" content="LuckyFrame测试平台是一款开源的测试平台，最大的特点是全纬度覆盖了接口自动化、WEB UI自动化、APP自动化，并且支持分布式测试，测试全关键字驱动">
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet"/>
+    <link href="css/login.min.css" rel="stylesheet"/>
+    <link href="/ruoyi/css/ry-ui.css?v=3.2.0" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <style type="text/css">label.error { position:inherit;  }</style>
+    <script>
+        if(window.top!==window.self){window.top.location=window.location};
+    </script>
+</head>
+
+<body class="signin">
+
+    <div class="signinpanel">
+        <div class="row" style="position:relative;">
+            <div class="logopanel m-b" style="text-align:center">
+               <h1><img alt="[ LuckyFrame ]" src="img/indexlogo.png"></h1>
+            </div>
+            <div class="col-sm-5" style="position:absolute;margin:auto;left:0;right:0;">
+                <form id="signupForm">
+                    <h4 class="no-margins">登录：</h4>
+                    <input type="text"     name="username" class="form-control uname"   placeholder="用户名" />
+                    <input type="password" name="password" class="form-control pword"   placeholder="密码"  />
+					<!-- <div class="row m-t">
+						<div class="col-xs-6">
+						    <input type="text" name="validateCode" class="form-control code" placeholder="验证码" maxlength="5">
+						</div>
+						<div class="col-xs-6">
+							<a href="javascript:void(0);" title="点击更换验证码">
+								<img src="img/captcha/captchaImage?type=math" class="imgcode" width="85%"/>
+							</a>
+						</div>
+					</div> -->
+                    <!-- <div class="checkbox-custom">
+				        <input type="checkbox" id="rememberme" name="rememberme"> <label for="rememberme">记住我</label>
+				    </div> -->
+                    <button class="btn btn-success btn-block" id="btnSubmit" data-loading="正在验证登录，请稍后...">登录</button>
+                </form>
+            </div>
+        </div>
+        <div class="signup-footer">
+            <div class="pull-left" style="background-color:#00BFFF;margin-top:5px">
+                &copy; 2020 All Rights Reserved. LuckyFrame 3.2.1<br>
+            </div>
+        </div>
+    </div>
+<script> var ctx = "\/"; var captchaType = "math"; </script>
+<!-- 全局js -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<!-- 验证插件 -->
+<script src="ajax/libs/validate/jquery.validate.min.js"></script>
+<script src="ajax/libs/validate/messages_zh.min.js"></script>
+<script src="ajax/libs/layer/layer.min.js"></script>
+<script src="ajax/libs/blockUI/jquery.blockUI.js"></script>
+<script src="ruoyi/js/ry-ui.js?v=3.2.0"></script>
+<script src="ruoyi/login.js"></script>
+</body>
+</html>
