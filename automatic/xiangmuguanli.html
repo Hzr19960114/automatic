@@ -121,6 +121,20 @@
 		      layer.confirm('真的删除行么', function(index){
 		        obj.del();
 		        layer.close(index);
+		        $.ajax({
+                      url:"http://localhost:8888/SysProjectController/delete/"+data.projectId,
+                      data:{},
+                      type:"delete",
+                      dataType:"json",
+                      success:function(data){
+                        console.log(data);
+                          layer.msg(data.msg);
+                          /*location.reload(); //删除成功后再刷新*/
+                      },
+                      error:function(data){
+                          $.messager.alert('错误',data.msg);
+                      }
+                  });
 		      });
 		    } else if(obj.event === 'edit'){
 		      layer.alert('编辑行：<br>'+ JSON.stringify(data))
@@ -150,47 +164,23 @@
 		  //《/工具栏》
 		  table.render({
 		    elem: '#test'
-		    /*,url:'/demo/table/user/'*/
+		    ,url:'http://localhost:8888/SysProjectController/findAll'
+		    ,method:"get"
+		    ,parseData:function(res){
+		    	console.log(res);
+		    	return{
+		    		"code":0
+		    		,"msg":""
+		    		,"data":res
+		    	}
+		    }
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '项目名称'}
-		      ,{field:'username', title: '归属部门'}
-		      ,{field:'sex', title: '项目标识'}
+		      ,{field:'projectId', title: '项目名称'}
+		      ,{field:'deptId', title: '归属部门'}
+		      ,{field:'projectSign', title: '项目标识'}
 		      ,{field:'city', title: '操作', toolbar: '#barDemo'}
 		    ]]
-		    ,data:[
-		    	{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    ]
 		    ,page: true
 		  });
 		});

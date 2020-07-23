@@ -146,7 +146,6 @@
 	</div>
 	<script type="text/html" id="barDemo">
 	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">编辑</a>
-	  <a class="layui-btn layui-btn-xs" lay-event="edit">新增</a>
 	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 	</script>
 	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
@@ -177,6 +176,20 @@
 		      layer.confirm('真的删除行么', function(index){
 		        obj.del();
 		        layer.close(index);
+		        $.ajax({
+                      url:"http://localhost:8888/SysRoleController/delete/"+data.roleId,
+                      data:{},
+                      type:"delete",
+                      dataType:"json",
+                      success:function(data){
+                        console.log(data);
+                          layer.msg(data.msg);
+                          /*location.reload(); //删除成功后再刷新*/
+                      },
+                      error:function(data){
+                          $.messager.alert('错误',data.msg);
+                      }
+                  });
 		      });
 		    } else if(obj.event === 'edit'){
 		      layer.alert('编辑行：<br>'+ JSON.stringify(data))
@@ -206,50 +219,26 @@
 		  //《/工具栏》
 		  table.render({
 		    elem: '#test'
-		    /*,url:'/demo/table/user/'*/
+		    ,url:'http://localhost:8888/SysRoleController/findAll'
+		    ,method:"get"
+		    ,parseData:function(res){
+		    	console.log(res);
+		    	return{
+		    		"code":0
+		    		,"msg":""
+		    		,"data":res
+		    	}
+		    }
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '角色编号', sort: true}
-		      ,{field:'username', title: '角色名称', sort: true}
-		      ,{field:'sex', title: '权限字符', sort: true}
-		      ,{field:'city', title: '显示顺序', sort: true}
-		      ,{field:'sign', title: '角色状态'}
-		      ,{field:'experience', title: '创建时间', sort: true}
-		      ,{field:'score', title: '操作'}
+		      ,{field:'roleId', title: '角色编号'}
+		      ,{field:'roleName', title: '角色名称'}
+		      ,{field:'roleKey', title: '权限字符', sort: true}
+		      ,{field:'roleSort', title: '显示顺序', sort: true}
+		      ,{field:'status', title: '角色状态'}
+		      ,{field:'createTime', title: '创建时间', sort: true}
+		      ,{field:'cazuo', title: '操作', toolbar: '#barDemo'}
 		    ]]
-		    ,data:[
-		    	{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    ]
 		    ,page: true
 		  });
 		});

@@ -149,6 +149,20 @@
 		      layer.confirm('真的删除行么', function(index){
 		        obj.del();
 		        layer.close(index);
+		        $.ajax({
+                      url:"http://localhost:8888/SysPostController/delete/"+data.postId,
+                      data:{},
+                      type:"delete",
+                      dataType:"json",
+                      success:function(data){
+                        console.log(data);
+                          layer.msg(data.msg);
+                          /*location.reload(); //删除成功后再刷新*/
+                      },
+                      error:function(data){
+                          $.messager.alert('错误',data.msg);
+                      }
+                  });
 		      });
 		    } else if(obj.event === 'edit'){
 		      layer.alert('编辑行：<br>'+ JSON.stringify(data))
@@ -178,16 +192,25 @@
 		  //《/工具栏》
 		  table.render({
 		    elem: '#test'
-		    /*,url:'/demo/table/user/'*/
+		    ,url:'http://localhost:8888/SysPostController/findAll'
+		    ,method:"get"
+		    ,parseData:function(res){
+		    	console.log(res);
+		    	return{
+		    		"code":0
+		    		,"msg":""
+		    		,"data":res
+		    	}
+		    }
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '岗位编号'}
-		      ,{field:'username', title: '岗位编码'}
-		      ,{field:'sex', title: '岗位名称', sort: true}
-		      ,{field:'city', title: '显示顺序', sort: true}
-		      ,{field:'city', title: '状态'}
-		      ,{field:'city', title: '创建时间', sort: true}
-		      ,{field:'city', title: '操作'}
+		      ,{field:'postId', title: '岗位编号'}
+		      ,{field:'postCode', title: '岗位编码'}
+		      ,{field:'postName', title: '岗位名称', sort: true}
+		      ,{field:'postSort', title: '显示顺序', sort: true}
+		      ,{field:'status', title: '状态'}
+		      ,{field:'createTime', title: '创建时间', sort: true}
+		      ,{field:'city', title: '操作', toolbar: '#barDemo'}
 		    ]]
 		    ,data:[
 		    	{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}

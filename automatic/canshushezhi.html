@@ -108,6 +108,20 @@
 		      layer.confirm('真的删除行么', function(index){
 		        obj.del();
 		        layer.close(index);
+		        $.ajax({
+                      url:"http://localhost:8888/SysConfigController/delete/"+data.configId,
+                      data:{},
+                      type:"delete",
+                      dataType:"json",
+                      success:function(data){
+                        console.log(data);
+                          layer.msg(data.msg);
+                          /*location.reload(); //删除成功后再刷新*/
+                      },
+                      error:function(data){
+                          $.messager.alert('错误',data.msg);
+                      }
+                  });
 		      });
 		    } else if(obj.event === 'edit'){
 		      layer.alert('编辑行：<br>'+ JSON.stringify(data))
@@ -137,51 +151,27 @@
 		  //《/工具栏》
 		  table.render({
 		    elem: '#test'
-		    /*,url:'/demo/table/user/'*/
+		    ,url:'http://localhost:8888/SysConfigController/findAll'
+		    ,method:"get"
+		    ,parseData:function(res){
+		    	console.log(res);
+		    	return{
+		    		"code":0
+		    		,"msg":""
+		    		,"data":res
+		    	}
+		    }
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '参数主键'}
-		      ,{field:'username', title: '参数名称'}
-		      ,{field:'sex', title: '参数键名'}
-		      ,{field:'city', title: '参数键值'}
-		      ,{field:'city', title: '系统内置'}
-		      ,{field:'city', title: '备注'}
-		      ,{field:'city', title: '创建时间'}
-		      ,{field:'city', title: '操作'}
+		      ,{field:'configId', title: '参数主键'}
+		      ,{field:'configName', title: '参数名称'}
+		      ,{field:'configKey', title: '参数键名'}
+		      ,{field:'configValue', title: '参数键值'}
+		      ,{field:'configType', title: '系统内置'}
+		      ,{field:'remark', title: '备注'}
+		      ,{field:'createTime', title: '创建时间'}
+		      ,{field:'city', title: '操作', toolbar: '#barDemo'}
 		    ]]
-		    ,data:[
-		    	{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    ]
 		    ,page: true
 		  });
 		});

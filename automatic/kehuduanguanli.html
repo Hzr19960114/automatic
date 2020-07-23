@@ -150,6 +150,20 @@
 		      layer.confirm('真的删除行么', function(index){
 		        obj.del();
 		        layer.close(index);
+		        $.ajax({
+                      url:"http://localhost:8888/SysClientController/delete/"+data.clientId,
+                      data:{},
+                      type:"delete",
+                      dataType:"json",
+                      success:function(data){
+                        console.log(data);
+                          layer.msg(data.msg);
+                          /*location.reload(); //删除成功后再刷新*/
+                      },
+                      error:function(data){
+                          $.messager.alert('错误',data.msg);
+                      }
+                  });
 		      });
 		    } else if(obj.event === 'edit'){
 		      layer.alert('编辑行：<br>'+ JSON.stringify(data))
@@ -179,51 +193,27 @@
 		  //《/工具栏》
 		  table.render({
 		    elem: '#test'
-		    /*,url:'/demo/table/user/'*/
+		    ,url:'http://localhost:8888/SysClientController/findAll'
+		    ,method:"get"
+		    ,parseData:function(res){
+		    	console.log(res);
+		    	return{
+		    		"code":0
+		    		,"msg":""
+		    		,"data":res
+		    	}
+		    }
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '客户端名称'}
-		      ,{field:'username', title: '客户端IP'}
-		      ,{field:'sex', title: '连接类型'}
-		      ,{field:'city', title: '客户端状态'}
-		      ,{field:'city', title: '心跳间隔'}
-		      ,{field:'city', title: '驱动路径'}
-		      ,{field:'city', title: '备注'}
-		      ,{field:'city', title: '操作'}
+		      ,{field:'clientName', title: '客户端名称'}
+		      ,{field:'clientIp', title: '客户端IP'}
+		      ,{field:'clientType', title: '连接类型'}
+		      ,{field:'status', title: '客户端状态'}
+		      ,{field:'checkinterval', title: '心跳间隔'}
+		      ,{field:'clientPath', title: '驱动路径'}
+		      ,{field:'remark', title: '备注'}
+		      ,{field:'city', title: '操作', toolbar: '#barDemo'}
 		    ]]
-		    ,data:[
-		    	{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    ]
 		    ,page: true
 		  });
 		});
