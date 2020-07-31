@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>部门管理</title>
+		<title>班级管理</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
 		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
 		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
@@ -17,11 +17,11 @@
 	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
 	                    <ul class="list-inline">
 	                    	<li>
-								部门名称：
-	                            <input type="text"  id="deptName"  value=""/>
+								班级名称：
+	                            <input type="text"  id="clazzName"  value=""/>
 	                       </li>
 	                        <li>
-	                           	部门状态：
+	                           	班级状态：
 	                            <select id="status" name="status" >
 	                                <option value="">所有</option>
 	                                <option value="0">正常</option>
@@ -71,7 +71,7 @@
 			    		<div class="layui-col-md10">
 			    			<form class="form-horizontal m layui-form"  novalidate="novalidate" lay-filter="example1">
 							<div class="form-group">
-								<label class="col-sm-3 control-label">上级部门：</label>
+								<label class="col-sm-3 control-label">所属年级：</label>
 								<div class="col-sm-8">
 									<select  class="form-control m-b "  id="parentId" name="parentId" lay-verify="required"  class="select">
 									    <option value="">---请选择---</option>
@@ -79,9 +79,9 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">部门名称：</label>
+								<label class="col-sm-3 control-label">班级名称：</label>
 								<div class="col-sm-8">
-									<input class="form-control" type="text" name="deptName" >
+									<input class="form-control" type="text" name="clazzName" >
 								</div>
 							</div>
 							<div class="form-group">
@@ -91,7 +91,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">负责人：</label>
+								<label class="col-sm-3 control-label">班主任：</label>
 								<div class="col-sm-8">
 									<input class="form-control" type="text" name="leader">
 								</div>
@@ -128,10 +128,10 @@
 				<div class="layui-row" id="popUpdateTest" style="display:none;">
 			    		<div class="layui-col-md10">
 			    			<form class="form-horizontal m layui-form" id="form-dict-add" novalidate="novalidate" lay-filter="example">
-							<input name="deptId" type="hidden" >
+							<input name="clazzId" type="hidden" >
 							<input name="clientId" type="hidden" id="clientId">
 							<div class="form-group">
-								<label class="col-sm-3 control-label">上级部门：</label>
+								<label class="col-sm-3 control-label">所属年级：</label>
 								<div class="col-sm-8">
 									<select  class="form-control m-b "  id="parentId2" name="parentId" lay-verify="required"  class="select">
 									    <option value="">---请选择---</option>
@@ -139,9 +139,9 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">部门名称：</label>
+								<label class="col-sm-3 control-label">班级名称：</label>
 								<div class="col-sm-8">
-									<input class="form-control" type="text" name="deptName" >
+									<input class="form-control" type="text" name="clazzName" >
 								</div>
 							</div>
 							<div class="form-group">
@@ -151,7 +151,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">负责人：</label>
+								<label class="col-sm-3 control-label">班主任：</label>
 								<div class="col-sm-8">
 									<input class="form-control" type="text" name="leader">
 								</div>
@@ -205,11 +205,11 @@
 					var insTb = treeTable.render({
 					    elem: '#test',
 //					    data: data,  // 数据
-					    url:'http://localhost:8888/SysDeptController/findAll',
+					    url:'http://localhost:8888/SysClazzController/findAll',
 		    			id: 'testReload',
 					    method:"get",
 					    treeSpid: '0',		//最上级的父级id
-			            treeIdName: 'deptId',	//id字段的名称
+			            treeIdName: 'clazzId',	//id字段的名称
 			            treePidName: 'parentId',	
 					    parseData:function(res){
 					    	console.log(res);
@@ -238,7 +238,7 @@
 					    },
 					    cols:[[
 					      {type:'radio'}		     
-					      ,{field:'deptName', title: '部门名称'}
+					      ,{field:'clazzName', title: '班级名称'}
 					      ,{field:'orderNum', title: '排序'}
 					      ,{field:'status', title: '状态'}
 					      ,{field:'createTime', title: '创建时间'}
@@ -247,15 +247,15 @@
 					}); 
 					var $ = layui.$, active = {
 				    	reload: function(){
-						    var deptName = $('#deptName').val();
+						    var clazzName = $('#clazzName').val();
 						    var status=$("#status").val();
 					      //执行重载
-					      if(deptName!=null||status!=null){
+					      if(clazzName!=null||status!=null){
 					      	
 					      }
 					      insTb.reload( {
 					       	where: {
-					        	deptName:deptName,
+					        	clazzName:clazzName,
 					    		status:status
 					       	}	
 					      });
@@ -271,7 +271,7 @@
 					form.on('submit(formDemo2)', function(data){
 						$.ajax({
 							type:"post",
-							url:"http://localhost:8888/SysDeptController/create",
+							url:"http://localhost:8888/SysClazzController/create",
 							data:data.field,
 							success:function(res){
 								console.log(res);
@@ -287,7 +287,7 @@
 					form.on('submit(update)', function(data){
 						$.ajax({
 							type:"post",
-							url:"http://localhost:8888/SysDeptController/update",
+							url:"http://localhost:8888/SysClazzController/update",
 							data:data.field,
 							success:function(res){
 								layer.confirm("修改成功!",function(){
@@ -401,7 +401,7 @@
 					        obj.del();
 					        layer.close(index);
 					        $.ajax({
-			                      url:"http://localhost:8888/SysDeptController/delete/"+data.deptId,
+			                      url:"http://localhost:8888/SysClazzController/delete/"+data.clazzId,
 			                      data:{},
 			                      type:"delete",
 			                      dataType:"json",
@@ -418,7 +418,7 @@
 					      });
 					      
 					    }else if(obj.event === 'inser'){
-					    	var data1={"parentId":data.deptId};
+					    	var data1={"parentId":data.clazzId};
 					    	layer.open({
 			      				title:['添加数据','color:#333333;background-color:#f8f8f8;'], 
 								type: 1
@@ -460,13 +460,13 @@
 			        success: function(data) {
 			            if (data!== null) {
 			            	$("#parentId").empty();
-		                	$("#parentId").append(new Option("请选择上级部门", "0"));
+		                	$("#parentId").append(new Option("请选择所属年级", "0"));
 			                $.each(data, function(index, item) {                   
 			                    $('#parentId').append(new Option(item.deptName,item.deptId));
 			                });
 			                
 			                $("#parentId2").empty();
-		                	$("#parentId2").append(new Option("请选择上级部门", "0"));
+		                	$("#parentId2").append(new Option("请选择所属年级", "0"));
 			                $.each(data, function(index, item) {                   
 			                    $('#parentId2').append(new Option(item.deptName,item.deptId));
 			                });

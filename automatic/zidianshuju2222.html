@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>字典数据</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+	<body class="gray-bg">
+	<div class="container-div">
+	    <div class="row" style="padding:0px;">
+	        <div class="col-sm-12 search-collapse">
+	            <form id="formId">
+	                <div class="select-list">
+	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
+	                    <ul class="list-inline">
+	
+	                        <li>
+								字典名称：
+	                             <select id="dictType" name="dictType">
+	                              		<option value="sys_user_sex" selected="selected">用户性别</option>
+					                      <option value="sys_show_hide">菜单状态</option>
+					                      <option value="sys_normal_disable">系统开关</option>
+					                      <option value="sys_job_status">任务状态</option>
+					                      <option value="sys_yes_no">系统是否</option>
+					                      <option value="sys_notice_type">通知类型</option>
+					                      <option value="sys_notice_status">通知状态</option>
+					                      <option value="sys_oper_type">操作类型</option>
+					                      <option value="sys_common_status">系统状态</option>
+					                      <option value="testmanagmt_case_type">用例类型</option>
+					                      <option value="testmanagmt_case_stepfailcontinue">步骤失败策略</option>
+					                      <option value="testmanagmt_templateparams_type">模板参数类型</option>
+					                      <option value="testmanagmt_casestep_httpoperation">步骤HTTP操作类型</option>
+					                      <option value="testmanagmt_casestep_uioperation">步骤Web UI操作类型</option>
+					                      <option value="testmanagmt_casestep_muioperation">步骤移动端操作类型</option>
+					                      <option value="task_execute_status">测试任务执行状态</option>
+					                      <option value="case_execute_status">测试用例执行状态</option>
+					                      <option value="qa_accident_status">生产事故登记状态</option>
+					                      <option value="qa_accident_level">生产事故等级</option>
+					                      <option value="qa_accident_type">生产事故类型</option>
+					                      <option value="qa_version_status">项目版本状态</option>
+	                            </select>
+	                        </li>
+	
+	                        <li>
+	                           	字典标签：
+	                            <input type="text"  id="dictLabel" value=""/>
+	                        </li>
+							
+							<li>
+	                           	数据状态：
+	                            <select id="status" name="status">
+	                                <option value="全部">所有</option>
+	                                <option value="0">正常</option>
+	                                <option value="1">停用</option>
+	                            </select>
+	                        </li>
+	                        
+							
+	                        <li>
+	                            <a class="btn btn-primary btn-rounded btn-sm " id="find" data-type="reload"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh" ></i>&nbsp;重置</a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-primary add"data-method="offset" data-type="auto">
+	                    <i class="glyphicon glyphicon-plus"></i> 新增
+	                </a>
+	                 <a class="btn btn-success btn-edit disabled"data-method="offset" data-type="auto" id="xg"> 
+	                    <i class="glyphicon glyphicon-edit"></i> 修改
+	                </a>
+	                 <a class="btn btn-danger btn-edit disabled"data-method="offset" data-type="auto" id="sc">
+	                    <i class="glyphicon glyphicon-remove"></i> 删除
+	                </a>
+	                <a class="btn btn-warning" id="dc">
+	                    <i class="glyphicon glyphicon-save"></i> 导出
+	                </a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>      		
+					</div>
+				</div>
+		        <table class="layui-hide" id="test" lay-filter="demo"></table>
+	        </div>
+	         <div class="layui-row" id="popUpdateTest" style="display:none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form" id="form-dict-add" novalidate="novalidate" lay-filter="example">
+								<div class="form-group">
+									<label class="col-sm-3 control-label ">字典标签：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="hidden" name="dictCode" id="dictCode">
+										<input class="form-control" type="hidden" name="createTime" id="createTime">	
+										<input class="form-control" type="text" name="dictLabel" id="dictLabel">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label ">字典键值：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="dictValue" id="dictValue">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">字典类型：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text"  name="dictType" readonly="true" value="">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">样式属性：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" id="cssClass" name="cssClass">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">字典排序：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="dictSort">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">回显样式：</label>
+									<div class="col-sm-8">
+										<select name="listClass" class="form-control m-by ">
+										    <option value="">---请选择---</option>
+						                    <option value="default">默认</option>
+						                    <option value="primary">主要</option>
+						                    <option value="success">成功</option>
+						                    <option value="info">   信息</option>
+						                    <option value="warning">警告</option>
+						                    <option value="danger"> 危险</option>
+						                </select>
+						                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> table表格字典列显示样式属性</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">系统默认：</label>
+									<div class="col-sm-8">
+										 <input type="radio" name="isDefault" value="Y" title="是" checked="">
+      									<input type="radio" name="isDefault" value="N" title="否">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">状态：</label>
+									<div class="col-sm-8">
+										 <input type="radio" name="status" value="0" title="正常" checked="">
+      									<input type="radio" name="status" value="1" title="停用">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">备注：</label>
+									<div class="col-sm-8">
+										<textarea id="remark" name="remark" class="form-control"></textarea>
+									</div>
+								</div>
+								<div class="layui-form-item">
+								    <div class="layui-input-block" style="text-align: center;">
+								    	 <button class="layui-btn" lay-submit lay-filter="update" >修改</button>
+								      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								    </div>
+								  </div>
+							</form>
+							
+	    		</div>
+	    	</div>
+	    	
+	    	 <div class="layui-row" id="popCreateTest" style="display: none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form"  novalidate="novalidate" lay-filter="example1">
+								<div class="form-group">
+									<label class="col-sm-3 control-label ">字典标签：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="dictLabel">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label ">字典键值：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="dictValue" >
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">字典类型：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="dictType" id="dictType" readonly="true" value="">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">样式属性：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text"  name="cssClass">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">字典排序：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="dictSort">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">回显样式：</label>
+									<div class="col-sm-8">
+										<select name="listClass" class="form-control m-b ">
+										    <option value="">---请选择---</option>
+						                    <option value="default">默认</option>
+						                    <option value="primary">主要</option>
+						                    <option value="success">成功</option>
+						                    <option value="info">   信息</option>
+						                    <option value="warning">警告</option>
+						                    <option value="danger"> 危险</option>
+						                </select>
+						                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> table表格字典列显示样式属性</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">系统默认：</label>
+									<div class="col-sm-8">
+										 <input type="radio" name="isDefault" value="Y" title="是" checked="">
+      									<input type="radio" name="isDefault" value="N" title="否">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">状态：</label>
+									<div class="col-sm-8">
+										 <input type="radio" name="status" value="0" title="正常" checked="">
+      									<input type="radio" name="status" value="1" title="停用">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">备注：</label>
+									<div class="col-sm-8">
+										<textarea id="remark" name="remark" class="form-control"></textarea>
+									</div>
+								</div>
+								 <div class="layui-form-item">
+								    <div class="layui-input-block" style="text-align: center;">
+								    	 <button class="layui-btn" lay-submit lay-filter="formDemo2" >新增</button>
+								      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								    </div>
+								  </div>
+							</form>
+	    		</div>
+	    	</div>	
+	    </div>
+	</div>
+	<script type="text/html" id="barDemo">
+	  <a class="btn btn-primary btn-xs" lay-event="edit"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+	  <a class="btn btn-danger btn-xs" lay-event="remove"> <i class="glyphicon glyphicon-remove"></i>删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		function resetForm() {
+            $('#dictLabel').val("");
+			    $("#dictType").val(sessionStorage.getItem("dictType"));
+			    $("#status").val("全部");
+        }
+		
+		layui.use(['form', 'layedit', 'laydate'], function(){
+			  var form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  ,laydate = layui.laydate;
+			  
+			form.on('submit(formDemo2)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/sysDictData/create",
+					data:data.field,
+					success:function(res){
+						layer.confirm("新增成功!",function(){
+							location.href=location.href;
+						});
+						
+					}
+				});
+				return false;
+			});
+			
+			form.on('submit(update)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/SysUserController/update",
+					data:data.field,
+					success:function(res){
+						layer.confirm("修改成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+					return false;
+			});
+		});  
+		 
+
+		layui.use(['table','form'], function(){
+			var form = layui.form;
+		  	var table = layui.table;
+		  	var tableIns =table.render({
+		    elem: '#test'
+		    ,url:"http://localhost:8888/SysUserController/findByPage"
+		    ,method:"get"
+		    ,where:{"dictType":sessionStorage.getItem("dictType")}
+		    ,cols: [[
+		      {type:'checkbox'}
+		      ,{field:'userId', title: '用户ID'}
+		      ,{field:'loginName', title: '登录名称', sort: true}
+		      ,{field:'userName', title: '用户昵称'}
+		      ,{field:'deptId', title: '部门'}
+		      ,{field:'phonenumber', title: '手机'}
+		      ,{field:'status', title: '用户状态'}
+		      ,{field:'sign', title: '操作', toolbar: '#barDemo'}
+		    ]]
+		    ,page: { //分页设定
+                layout: ['count', 'prev', 'page', 'next'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10//每页多少数据
+                , groups: 5 //只显示 5 个连续页码
+            } 
+            ,parseData:function(res){
+            	sessionStorage.setItem("dictType",res.list[0].dictType);
+		    	for(var i=0;i<res.list.length;i++){
+		    		if(res.list[i].status=="0"){
+		    			res.list[i].status="正常";
+		    		}else{
+		    			res.list[i].status="停用";
+		    		}
+		    	}
+		    	return{
+		    		"code":0,
+		    		"msg":"",
+		    		"count":res.pages,/*total*/
+		    		data:res.list
+		    	}
+		    }
+		    ,id: 'testReload'
+		  });
+			 var $ = layui.$, active = {
+		    	reload: function(){
+				   var dictType = $('#dictType').val();
+				    var dictLabel=$("#dictLabel").val();
+				    var status=$("#status").val();
+			      //执行重载
+			      table.reload('testReload', {
+			        page: {
+			          curr: 1 //重新从第 1 页开始
+			        }
+			        ,where: {
+			        	dictLabel:dictLabel,
+			        	dictType:dictType,
+			        	status:status
+			        }
+			      });
+
+		    }
+		  };
+			
+  			$('#find').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+		  });
+		  
+		  var shuju={};
+		   table.on('checkbox(demo)', function(obj){
+		   	 var checkStatus = table.checkStatus('testReload')
+      		,data = checkStatus.data;
+		   	if(data.length==0){
+		   		$("#xg").addClass("disabled");
+		   		$("#sc").addClass("disabled");
+		  	}else if(data.length==1){
+		  		$("#xg").removeClass("disabled");
+		  		shuju=data[0];
+		  		
+		    		if(shuju.status=="正常"){
+		    			shuju.status="0";
+		    		}else{
+		    			shuju.status="1";
+		    		}
+		    	
+		  		$("#sc").removeClass("disabled");
+		  	}else{
+		  		$("#sc").removeClass("disabled");
+		  		$("#xg").addClass("disabled");	
+		  	}
+	  
+  			});
+  			
+  			$('.add').on('click', function(){
+			    layer.open({
+	      				title:['添加数据','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo1'+"auto" //防止重复弹出
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' 
+				        ,content:$("#popCreateTest").html()
+				        ,shade: 0 //不显示遮罩
+	      			});
+	      			 form.val('example1',{
+	      			 	"dictType":sessionStorage.getItem("dictType")
+	      			 });
+			});
+  			
+  			$("#xg").on('click', function(){
+  				layer.open({
+	      				title:['修改类型','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				        	
+				    
+				        }
+	      		});
+	      		form.val('example',shuju);
+	      			
+		   });
+		   
+		   $("#sc").on('click', function(){
+		   		var checkStatus = table.checkStatus('testReload')
+      			,data = checkStatus.data;
+      			var str=JSON.stringify(data);
+      			layer.confirm('确定要删除选中的'+data.length+'条数据吗？', function(index){
+      				 layer.close(index);
+      				 $.ajax({
+      				 	url:"http://localhost:8888/sysDictData/removeList",
+				      	method:"post",
+						data:str,
+						contentType:"application/json;charset=utf-8",
+				      	success:function(res){
+				      		 tableIns.reload();
+				      		layer.alert("删除成功");
+				      	}
+      				 });
+      			 });
+      			
+		   	});
+		   	
+		   	$("#dc").on('click',function(){
+		   		 var dictType = $('#dictType').val();
+				    var dictLabel=$("#dictLabel").val();
+				    var status=$("#status").val();
+		   		var url="?dictLabel="+dictLabel+"&dictType="+dictType+"&status="+status;
+		   		location.href="http://localhost:8888/sysDictData/exportExcel"+url;
+		   	});
+		  	
+		  
+		  table.on('tool(demo)', function(obj){
+		    var data = obj.data;
+		   		 if(data.status=="正常"){
+		    			data.status="0";
+		    		}else{
+		    			data.status="1";
+		    		}
+		    if(obj.event === 'edit'){
+		      layer.open({
+	      				title:['修改数据','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+	      			 form.val('example',data);
+		    } else if(obj.event === 'remove'){
+		      layer.confirm('真的删除行么', function(index){
+		        obj.del();
+		        layer.close(index);
+			      $.ajax({
+			      	url:"http://localhost:8888/sysDictData/remove",
+			      	data:{
+			      		dictCode:data.dictCode
+			      	},
+			      	success:function(res){
+			      		layer.alert("删除成功");
+			      	}
+			      });
+		      
+		      });
+		      
+		    }
+		  });
+		});
+  		
+  		$(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  		});
+	</script>	
+</html>

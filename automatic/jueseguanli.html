@@ -18,18 +18,18 @@
 	                    <ul class="list-inline">
 	                    	<li>
 								角色名称：
-	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                            <input type="text" id="roleName"  value=""/>
 	                        </li>
 	                        <li>
 								权限字符：
-	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="roleKey" value=""/>
 	                        </li>
 	                        <li>
 	                           	角色状态：
-	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
-	                                <option value="">所有项目</option>
-	                                <option value="2">流程测试项目</option>
-	                                <option value="1">测试项目一</option>
+	                            <select id="status" name="status" >
+	                                <option value="">所有</option>
+	                                <option value="0">正常</option>
+	                                <option value="1">关闭</option>
 	                            </select>
 	                        </li>
 	                        <li class="select-time">
@@ -43,29 +43,78 @@
 							    </div>
 							</li>
 	                        <li>
-	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
-	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
-	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
-	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                            <a class="btn btn-primary btn-rounded btn-sm " id="find" data-type="reload">
+	                            	<i class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()">
+	                            	<i class="fa fa-refresh glyphicon glyphicon-refresh" ></i>&nbsp;重置</a>
 	                        </li>
 	                    </ul>
 	                </div>
 	            </form>
 	        </div>
+	       <!-- 新增框-->
+	       <div class="layui-row" id="popCreateTest" style="display: none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form"  novalidate="novalidate" lay-filter="example1">
+					<input name="roleId" type="hidden" id="roleId">
+					<div class="form-group">
+						<label class="col-sm-3 control-label ">角色名称：</label>
+						<div class="col-sm-8">
+							<input class="form-control" type="text" name="roleName" id="roleName">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">权限字符：</label>
+						<div class="col-sm-8">
+							<input class="form-control" type="text" name="roleKey" id="roleKey">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">显示顺序：</label>
+						<div class="col-sm-8">
+							<input class="form-control" type="text" name="roleSort" id="roleSort">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">状态：</label>
+						<div class="col-sm-8">
+							 <input type="radio" name="status" value="0" title="正常" checked="">
+							 <input type="radio" name="status" value="1" title="停用">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">应用项目：</label>
+						<div class="col-sm-8" id="inp">
+							
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">备注：</label>
+						<div class="col-sm-8">
+							<textarea id="remark" name="remark" class="form-control" type="text"></textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+				    <div class="layui-input-block" style="text-align: center;">
+				    	 <button class="layui-btn" id="formcreate" lay-submit lay-filter="formDemo2" >新增</button>
+				      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				    </div>
+				  	</div>
+					</form>
+				</div>
+			</div>
+		</div>
 	        
 	        <div class="col-sm-12 select-table table-striped">
 	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
 	                <a class="btn btn-primary add" data-method="offset" data-type="auto">
 	                    <i class="fa fa-plus glyphicon glyphicon-plus"></i> 新增
 	                </a>
-	                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">
+	                <a class="btn btn-primary btn-edit disabled" id="xg" >
 	                    <i class="fa fa-edit glyphicon glyphicon-edit"></i> 修改
 	                </a>
-	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+	                <a class="btn btn-danger btn-del btn-del disabled" id="sc" >
 	                    <i class="fa fa-remove glyphicon glyphicon-remove"></i> 删除
-	                </a>
-	                <a class="btn btn-warning btn-del btn-del disabled" onclick="$.operate.removeAll()">
-	                    <i class="fa fa-remove glyphicon glyphicon glyphicon-upload"></i> 导出
 	                </a>
 					<div class="columns columns-right btn-group pull-right">
 		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
@@ -80,79 +129,70 @@
 	        		</div>
 	        	</div>
 		        <table class="layui-hide" id="test" lay-filter="demo"></table>
-		        <div class="layui-row" id="popUpdateTest" style="display: none;">
-		        		<div class="layui-col-md10">
-					        <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-								<form class="form-horizontal m" id="form-role-add" novalidate="novalidate">
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">角色名称：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" name="roleName" id="roleName">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label">权限字符：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" name="roleKey" id="roleKey">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label">显示顺序：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" name="roleSort" id="roleSort">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label">状态：</label>
-										<div class="col-sm-8">
-											<div class="onoffswitch">
-						                         <input type="checkbox" class="onoffswitch-checkbox" id="status" name="status" checked="checked">
-						                         <label class="onoffswitch-label" for="status">
-						                             <span class="onoffswitch-inner"></span>
-						                             <span class="onoffswitch-switch"></span>
-						                         </label>
-						                     </div>
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label">应用项目：</label>
-										<div class="col-sm-8">
-											<label class="check-box">
-												<div class="icheckbox-blue"><input name="project" type="checkbox" value="2" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>流程测试项目
-											</label><label class="check-box">
-												<div class="icheckbox-blue"><input name="project" type="checkbox" value="1" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>测试项目一
-											</label>
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label">备注：</label>
-										<div class="col-sm-8">
-											<textarea id="remark" name="remark" class="form-control" type="text"></textarea>
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label">菜单权限</label>
-										<div class="col-sm-8">
-											<div id="menuTrees" class="ztree"><li id="menuTrees_1" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="menuTrees_1_switch" title="" class="button level0 switch roots_close" treenode_switch=""></span><span id="menuTrees_1_check" class="button chk checkbox_false_full" treenode_check=""></span><a id="menuTrees_1_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="测试管理"><span id="menuTrees_1_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="menuTrees_1_span">测试管理<font color="#888">&nbsp;&nbsp;&nbsp;</font></span></a></li><li id="menuTrees_28" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="menuTrees_28_switch" title="" class="button level0 switch center_close" treenode_switch=""></span><span id="menuTrees_28_check" class="button chk checkbox_false_full" treenode_check=""></span><a id="menuTrees_28_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="测试执行"><span id="menuTrees_28_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="menuTrees_28_span">测试执行<font color="#888">&nbsp;&nbsp;&nbsp;</font></span></a></li><li id="menuTrees_42" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="menuTrees_42_switch" title="" class="button level0 switch center_close" treenode_switch=""></span><span id="menuTrees_42_check" class="button chk checkbox_false_full" treenode_check=""></span><a id="menuTrees_42_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="质量管理"><span id="menuTrees_42_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="menuTrees_42_span">质量管理<font color="#888">&nbsp;&nbsp;&nbsp;</font></span></a></li><li id="menuTrees_53" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="menuTrees_53_switch" title="" class="button level0 switch center_close" treenode_switch=""></span><span id="menuTrees_53_check" class="button chk checkbox_false_full" treenode_check=""></span><a id="menuTrees_53_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="系统管理"><span id="menuTrees_53_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="menuTrees_53_span">系统管理<font color="#888">&nbsp;&nbsp;&nbsp;</font></span></a></li><li id="menuTrees_110" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="menuTrees_110_switch" title="" class="button level0 switch center_close" treenode_switch=""></span><span id="menuTrees_110_check" class="button chk checkbox_false_full" treenode_check=""></span><a id="menuTrees_110_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="系统监控"><span id="menuTrees_110_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="menuTrees_110_span">系统监控<font color="#888">&nbsp;&nbsp;&nbsp;</font></span></a></li><li id="menuTrees_125" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="menuTrees_125_switch" title="" class="button level0 switch bottom_close" treenode_switch=""></span><span id="menuTrees_125_check" class="button chk checkbox_false_full" treenode_check=""></span><a id="menuTrees_125_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="系统工具"><span id="menuTrees_125_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="menuTrees_125_span">系统工具<font color="#888">&nbsp;&nbsp;&nbsp;</font></span></a></li></div>
-										</div>
-									</div>
-								</form>
-							</div>
-		        			
-		        		</div>
-		        </div>
+		        	       <!-- 修改框-->
+	       <div class="layui-row" id="popUpdateTest" style="display:none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form" id="form-dict-add" novalidate="novalidate" lay-filter="example">
+					<input name="roleId" type="hidden" id="roleId">
+					<div class="form-group">
+						<label class="col-sm-3 control-label ">角色名称：</label>
+						<div class="col-sm-8">
+							<input class="form-control" type="text" name="roleName" id="roleName">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">权限字符：</label>
+						<div class="col-sm-8">
+							<input class="form-control" type="text" name="roleKey" id="roleKey">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">显示顺序：</label>
+						<div class="col-sm-8">
+							<input class="form-control" type="text" name="roleSort" id="roleSort">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">状态：</label>
+						<div class="col-sm-8">
+							 <input type="radio" name="status" value="0" title="正常" checked="">
+							 <input type="radio" name="status" value="1" title="停用">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">应用项目：</label>
+						<div class="col-sm-8" id="inp2">
+							
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">备注：</label>
+						<div class="col-sm-8">
+							<textarea id="remark" name="remark" class="form-control" type="text"></textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+				    <div class="layui-input-block" style="text-align: center;">
+				    	 <button class="layui-btn" lay-submit lay-filter="update" >修改</button>
+				      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				    </div>
+				  	</div>
+					</form>
+				</div>
+			</div>
 	        </div>
 	    </div>
 	</div>
 	<script type="text/html" id="barDemo">
-	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">编辑</a>
-	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	  <a class="btn btn-primary btn-xs" lay-event="edit"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+	  <a class="btn btn-danger btn-xs" lay-event="remove"> <i class="glyphicon glyphicon-remove"></i>删除</a>
 	</script>
 	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
 	<script>
+		/*日期框*/
 		layui.use('laydate', function(){
 			var laydate = layui.laydate;
 			laydate.render({
@@ -164,15 +204,274 @@
 			    ,format: 'yyyy年MM月dd日'
 			});
 		});
-		layui.use('table', function(){
-		  var table = layui.table;
-		  //《工具栏》
-		  //监听工具条
+		
+		/*从这里开始*/
+		function resetForm() {
+            	$('#dictLabel').val("");
+			    $("#dictType").val(sessionStorage.getItem("dictType"));
+			    $("#status").val("全部");
+        }
+		
+		
+		layui.use(['form', 'layedit', 'laydate'], function(){
+			  var form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  ,laydate = layui.laydate;
+			  
+			form.on('submit(formDemo2)', function(data){
+				var ids = [];
+				$("input[name='proid']:checked").each(function(i){
+					ids.push($(this).val());
+				})
+				data.field.ids=ids.join(",");
+				console.log(data.field);
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/SysRoleController/create",
+					data:data.field,
+					success:function(res){
+						console.log(res);
+						layer.confirm("新增成功!",function(){
+							location.href=location.href;
+						});
+						
+					}
+				});
+				return false;
+			});
+			
+			form.on('submit(update)', function(data){
+				var ids = [];
+				$("input[name='proid']:checked").each(function(i){
+					ids.push($(this).val());
+				})
+				data.field.ids=ids.join(",");
+				console.log(data.field);
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/SysRoleController/update",
+					data:data.field,
+					success:function(res){
+						layer.confirm("修改成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+					return false;
+			});
+		});  
+		 
+
+		layui.use(['table','form'], function(){
+			var form = layui.form;
+		  	var table = layui.table;
+		  	var tableIns =table.render({
+		    elem: '#test'
+		    ,url:"http://localhost:8888/SysRoleController/findByPage"
+		    ,toolbar:true
+		    ,method:"get"
+		    /*,where:{"dictType":sessionStorage.getItem("dictType")}*/
+		    ,cols: [[
+		      {type:'checkbox'}
+		      ,{field:'roleId', title: '角色编号'}
+		      ,{field:'roleName', title: '角色名称'}
+		      ,{field:'roleKey', title: '权限字符', sort: true}
+		      ,{field:'roleSort', title: '显示顺序', sort: true}
+		      ,{field:'status', title: '角色状态'}
+		      ,{field:'createTime', title: '创建时间', sort: true}
+		      ,{field:'cazuo', title: '操作', toolbar: '#barDemo'}
+		    ]]
+		    /*,page: { //分页设定
+                layout: ['count', 'prev', 'page', 'next'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10//每页多少数据
+                , groups: 5 //只显示 5 个连续页码
+            } */
+            ,parseData:function(res){
+            	/*sessionStorage.setItem("dictType",res.list[0].dictType);*/
+		    	for(var i=0;i<res.list.length;i++){
+		    		if(res.list[i].status=="0"){
+		    			res.list[i].status="正常";
+		    		}else{
+		    			res.list[i].status="停用";
+		    		}
+		    	}
+		    	return{
+		    		"code":0,
+		    		"msg":"",
+		    		"count":res.total,/*total*/
+		    		data:res.list
+		    	}
+		    }
+		    ,page: true
+		    ,id: 'testReload'
+		  });
+			 var $ = layui.$, active = {
+		    	reload: function(){
+				    var roleName = $('#roleName').val();
+				    var roleKey=$("#roleKey").val();
+				    var status=$("#status").val();
+				    var createtimenum1=$("#test11").val();
+				    var createtimenum2=$("#test12").val();
+			      //执行重载
+			      table.reload('testReload', {
+			        page: {
+			          curr: 1 //重新从第 1 页开始
+			        }
+			        ,where: {
+			        	roleName:roleName,
+			        	roleKey:roleKey,
+			        	status:status,
+			        	createtimenum1:createtimenum1,
+			        	createtimenum2:createtimenum2
+			        }
+			      });
+
+		    }
+		  };
+			layui.use('laydate', function(){
+			
+			var laydate = layui.laydate;
+			laydate.render({
+			    elem: '#test11'
+			   ,type: 'datetime'
+			});
+			laydate.render({
+			    elem: '#test12'
+			   ,type: 'datetime'
+			});
+		});
+  			$('#find').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+		  });
+		  
+		  var shuju={};
+		   table.on('checkbox(demo)', function(obj){
+		   	 var checkStatus = table.checkStatus('testReload')
+      		,data = checkStatus.data;
+		   	if(data.length==0){
+		   		$("#xg").addClass("disabled");
+		   		$("#sc").addClass("disabled");
+		  	}else if(data.length==1){
+		  		$("#xg").removeClass("disabled");
+		  			shuju=data[0];
+		  			$.each(data.pro, function(index, item) {
+		  				alert(item.projectName);
+		  			});
+		    		if(shuju.status=="正常"){
+		    			shuju.status="0";
+		    		}else{
+		    			shuju.status="1";
+		    		}
+		    	
+		  		$("#sc").removeClass("disabled");
+		  	}else{
+		  		$("#sc").removeClass("disabled");
+		  		$("#xg").addClass("disabled");	
+		  	}
+	  
+  			});
+  			
+  			$('.add').on('click', function(){
+			    layer.open({
+	      				title:['添加数据','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo1'+"auto" //防止重复弹出
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' 
+				        ,content:$("#popCreateTest").html()
+				        ,shade: 0 //不显示遮罩
+	      			});
+	      			 form.val('example1',{
+	      			 	"dictType":sessionStorage.getItem("dictType")
+	      			 });
+			});
+  			
+  			$("#xg").on('click', function(){
+  				layer.open({
+	      				title:['修改角色','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				        	
+				        }
+	      		});
+	      		form.val('example',shuju);
+	      			
+		   });
+		   
+		   $("#sc").on('click', function(){
+		   		var checkStatus = table.checkStatus('testReload')
+      			,data = checkStatus.data;
+      			var str=JSON.stringify(data);
+      			layer.confirm('确定要删除选中的'+data.length+'条数据吗？', function(index){
+      				 layer.close(index);
+      				 $.ajax({
+      				 	url:"http://localhost:8888/SysRoleController/removeList",
+				      	method:"post",
+						data:str,
+						contentType:"application/json;charset=utf-8",
+				      	success:function(res){
+				      		 tableIns.reload();
+				      		 layer.alert("删除成功");
+				      	}
+      				 });
+      			 });
+      			
+		   	});
+		   	
+		   	$("#dc").on('click',function(){
+		   		 	var login_name = $('#login_name').val();
+				    var phonenumber=$("#phonenumber").val();
+				    var status=$("#status").val();
+				    var createtimenum1=$("#createtimenum1").val();
+				    var createtimenum2=$("#createtimenum2").val();
+				    
+		   		var url="?login_name="+login_name+"&phonenumber="+phonenumber+"&status="+status+"&createtimenum1="+createtimenum1+"&createtimenum2="+createtimenum2;
+		   		location.href="http://localhost:8888/SysUserController/exportExcel"+url;
+		   	});
+		  	
+		  
 		  table.on('tool(demo)', function(obj){
 		    var data = obj.data;
-		    if(obj.event === 'detail'){
-		      layer.msg('id：'+ data.id + ' 的查看操作');
-		    } else if(obj.event === 'del'){
+		   		 if(data.status=="正常"){
+		    			data.status="0";
+		    		}else{
+		    			data.status="1";
+		    		}
+		    if(obj.event === 'edit'){
+		      layer.open({
+	      				title:['修改数据','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+	      			 form.val('example',data);
+		    } else if(obj.event === 'remove'){
 		      layer.confirm('真的删除行么', function(index){
 		        obj.del();
 		        layer.close(index);
@@ -184,93 +483,41 @@
                       success:function(data){
                         console.log(data);
                           layer.msg(data.msg);
-                          /*location.reload(); //删除成功后再刷新*/
+				          layer.alert("删除成功");
                       },
                       error:function(data){
                           $.messager.alert('错误',data.msg);
                       }
                   });
+		      
 		      });
-		    } else if(obj.event === 'edit'){
-		      layer.alert('编辑行：<br>'+ JSON.stringify(data))
+		      
 		    }
-		  });
-		  
-		   var $ = layui.$, active = {
-		    getCheckData: function(){ //获取选中数据
-		      var checkStatus = table.checkStatus('test')
-		      ,data = checkStatus.data;
-		      layer.alert(JSON.stringify(data));
-		    }
-		    ,getCheckLength: function(){ //获取选中数目
-		      var checkStatus = table.checkStatus('test')
-		      ,data = checkStatus.data;
-		      layer.msg('选中了：'+ data.length + ' 个');
-		    }
-		    ,isAll: function(){ //验证是否全选
-		      var checkStatus = table.checkStatus('test');
-		      layer.msg(checkStatus.isAll ? '全选': '未全选')
-		    }
-		  };
-		    $('.demoTable .layui-btn').on('click', function(){
-			    var type = $(this).data('type');
-			    active[type] ? active[type].call(this) : '';
-			  });
-		  //《/工具栏》
-		  table.render({
-		    elem: '#test'
-		    ,url:'http://localhost:8888/SysRoleController/findAll'
-		    ,method:"get"
-		    ,parseData:function(res){
-		    	console.log(res);
-		    	return{
-		    		"code":0
-		    		,"msg":""
-		    		,"data":res
-		    	}
-		    }
-		    ,cols: [[
-		      {type:'checkbox'}
-		      ,{field:'roleId', title: '角色编号'}
-		      ,{field:'roleName', title: '角色名称'}
-		      ,{field:'roleKey', title: '权限字符', sort: true}
-		      ,{field:'roleSort', title: '显示顺序', sort: true}
-		      ,{field:'status', title: '角色状态'}
-		      ,{field:'createTime', title: '创建时间', sort: true}
-		      ,{field:'cazuo', title: '操作', toolbar: '#barDemo'}
-		    ]]
-		    ,page: true
 		  });
 		});
-		layui.use('layer', function(){ //独立版的layer无需执行这一句
-			var active = {
-				offset: function(othis){
-      				var type = othis.data('type');
-	      			layer.open({
-	      				title:['添加测试任务调度','color:#333333;background-color:#f8f8f8;'], 
-						type: 1
-						,area: ['800px', '676px']
-				        ,shade: 0
-				        ,maxmin: true
-				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-				        ,id: 'layerDemo'+type //防止重复弹出
-				        ,content:$("#popUpdateTest").html()
-				        ,btn: ['确定','取消']
-				        ,btnAlign: 'r' //按钮居中
-				        ,shade: 0 //不显示遮罩
-				        ,yes: function(){
-				          layer.closeAll();
-				        }
-	      			});
-    			}
-			}
-			$('.add').on('click', function(){
-			    var othis = $(this), method = othis.data('method');
-			    active[method] ? active[method].call(this, othis) : '';
-			});
-  		});
-  		
-  		
+  		//获取项目
+  		layui.use('form',function(){
+		  var $ = layui.jquery
+		  var form = layui.form
+		  $.ajax({
+		        url: 'http://localhost:8888/SysRoleController/findpro',
+		        dataType: 'json',
+		        type: 'get',
+		        success: function(data) {
+		            if (data!== null) {
+		                $.each(data, function(index, item) { ///<input type="checkbox" name="" title="写作" checked> 
+		            		var inp="<input type='checkbox' value="+item.projectId+" name='proid' title='"+item.projectName+"'>"
+		                    $('#inp').append(inp);
+		                    $('#inp2').append(inp);
+		               });
+		           } else {
+		                
+		            }
+		            //重新渲染
+		            form.render("select");
+		        }
+		    });
+		});
   		$(function(){
   			$("[name=showSearch]").click(function(){
   				$(".search-collapse").slideToggle();
