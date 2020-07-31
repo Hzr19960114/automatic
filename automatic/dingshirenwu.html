@@ -14,32 +14,31 @@
 	        <div class="col-sm-12 search-collapse">
 	            <form id="formId">
 	                <div class="select-list">
-	                    <input id="treeId" name="moduleId" type="hidden" value=""/>
 	                    <ul class="list-inline">
 	
 	                        <li>
 								任务名称：
-	                            <input type="text"  id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="jobName" value=""/>
 	                        </li>
 	
 	                        <li>
 	                           	方法名称：
-	                            <input type="text"  id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="methodName" value=""/>
 	                        </li>
 							
 							 <li>
 	                           	任务状态：
-	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
-	                                <option value="">所有</option>
-	                                <option value="2">正常</option>
+	                            <select id="status" name="status">
+	                                <option value="全部">所有</option>
+	                                <option value="0">正常</option>
 	                                <option value="1">停止</option>
 	                            </select>
 	                        </li>
 	                        
 	                        <li>
-	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                            <a class="btn btn-primary btn-rounded btn-sm " id="find" data-type="reload"><i
 	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
-	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                            <a class="btn btn-warning btn-rounded btn-sm"  onclick="resetForm()"><i
 	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
 	                        </li>
 	                    </ul>
@@ -75,33 +74,73 @@
 	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
 	<script>
+		 function resetForm() {
+            $('#jobName').val("");
+			    $("#methodName").val("");
+			    $("#status").val("全部");
+        }
+		
 		layui.use('table', function(){
 		  var table = layui.table;
 		  table.render({
 		    elem: '#test'
+		    ,url:"http://localhost:8888/sysJob/find"
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '任务编号'}
-		      ,{field:'username', title: '任务名称',sort: true}
-		      ,{field:'sex', title: '任务组名',sort: true}
-		      ,{field:'city', title: '方法名称'}
-		      ,{field:'sign', title: '方法参数'}
-		      ,{field:'experience', title: '执行表达式'}
-		      ,{field:'score', title: '任务状态'}
-		      ,{field:'classify', title: '更新时间',sort: true}
+		      ,{field:'jobId', title: '任务编号'}
+		      ,{field:'jobName', title: '任务名称',sort: true}
+		      ,{field:'jobGroup', title: '任务组名',sort: true}
+		      ,{field:'methodName', title: '方法名称'}
+		      ,{field:'methodParams', title: '方法参数'}
+		      ,{field:'cronExpression', title: '执行表达式'}
+		      ,{field:'status', title: '任务状态'}
+		      ,{field:'updateTime', title: '更新时间',sort: true}
 		    ]]
-		     ,data: [{
-		      "id": "10001"
-		      ,"username": "杜甫"
-		      ,"email": "xianxin@layui.com"
-		      ,"sex": "男"
-		      ,"city": "浙江杭州"
-		      ,"sign": "人生恰似一场修行"
-		      ,"experience": "116"
-		      ,"score": "192.168.0.8"
-		      ,"classify": "108"
-		    }]
-		    ,page: true
+		    ,page: { //分页设定
+                layout: ['count', 'prev', 'page', 'next'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10//每页多少数据
+                , groups: 5 //只显示 5 个连续页码
+           },parseData:function(res){
+		    	for(var i=0;i<res.list.length;i++){
+		    		if(res.list[i].status=="0"){
+		    			res.list[i].status="正常";
+		    		}else{
+		    			res.list[i].status="停用";
+		    		}
+		    	}
+		    	return{
+		    		"code":0,
+		    		"msg":"",
+		    		"count":res.pages,
+		    		data:res.list
+		    	}
+		    }
+		    ,id: 'testReload' 
+		  });
+		  
+		  var $ = layui.$, active = {
+		    	reload: function(){
+				   var jobName = $('#jobName').val();
+				    var methodName=$("#methodName").val();
+				    var status=$("#status").val();
+			      //执行重载
+			      table.reload('testReload', {
+			        page: {
+			          curr: 1 //重新从第 1 页开始
+			        }
+			        ,where: {
+			        	jobName:jobName,
+			        	methodName:methodName,
+			        	status:status
+			        }
+			      });
+
+		    }
+		  };
+		  	$('#find').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
 		  });
 		});
 		$(function(){

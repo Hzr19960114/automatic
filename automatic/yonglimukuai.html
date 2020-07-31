@@ -18,21 +18,19 @@
 	                    <ul class="list-inline">
 	                        <li>
 								模板名称：
-	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="moduleName" name="moduleName" value=""/>
 	                        </li>
 	                        <li>
 	                           	项目：
-	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
+	                            <select id="projectId" name="projectId">
 	                                <option value="">所有项目</option>
-	                                <option value="2">流程测试项目</option>
-	                                <option value="1">测试项目一</option>
 	                            </select>
 	                        </li>
 	
 	                        <li>
-	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                            <a class="btn btn-primary btn-rounded btn-sm " id="find"  data-type="reload"><i
 	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
-	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                            <a class="btn btn-warning btn-rounded btn-sm" ><i
 	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
 	                        </li>
 	                    </ul>
@@ -60,97 +58,230 @@
 		        		</button>
 	        		</div>
 	        	</div>
-		        <table class="layui-hide" id="test"  id="permissionTable"></table>
+		        <table class="layui-hide" id="test"></table>
 		        
-		        <div class="layui-row" id="popUpdateTest" style="display:none;">
+		        <div class="layui-row" id="daor" style="display: none;">
 		    		<div class="layui-col-md10">
-		    			<form id="importForm" enctype="multipart/form-data" class="mt20 mb10 layui-layer-wrap" style="">
+		    			<form id="importForm" enctype="multipart/form-data" class="mt20 mb10 layui-layer-wrap" style="" action="http://localhost:8888/projectCaseModule/upalodExcel" method="post">
 							<div class="col-xs-offset-1">
 								<input type="file" id="file" name="file">
 						
 								<div class="mt10 pt5">
-									<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs">
+									<a href="http://localhost:8888/projectCaseModule/studentDownload" class="btn btn-default btn-xs">
 									<i class="fa fa-file-excel-o"></i> 下载模板</a>
 								</div>
 								<font color="red" class="pull-left mt10">
 									提示：仅允许导入“xls”或“xlsx”格式文件！
 								</font>
+								<button class="layui-btn" lay-submit lay-filter="daor" >导入</button>
 							</div>
 						</form>
 		    		</div>
 		    	</div>
 	        </div>
+	        <div class="layui-row" id="popCreateTest" style="display: none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form" id="form-projectCaseModule-add" novalidate="novalidate" lay-filter="example1">
+				        <input id="projectId" name="projectId" type="hidden">
+				        <input id="parentId" name="parentId" type="hidden">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">父模块：</label>
+								<div class="col-sm-8">
+									<input class="form-control" type="text" id="treeName" name="treeName" readonly="true">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">模块名字：</label>
+								<div class="col-sm-8">
+									<input id="moduleName" name="moduleName" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">显示顺序：</label>
+								<div class="col-sm-8">
+									<input id="orderNum" name="orderNum" class="form-control" type="text" value="1">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<textarea id="remark" name="remark" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="layui-form-item">
+						    <div class="layui-input-block" style="text-align: center;">
+						    	 <button class="layui-btn" lay-submit lay-filter="formDemo2" >新增</button>
+						      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						    </div>
+						 </div>	
+						</form>
+	    		</div>
+	    	</div>	
+	    	
+	    	 <div class="layui-row" id="popUpdateTest" style="display: none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form" id="form-projectCaseModule-add" novalidate="novalidate" lay-filter="example">
+				        <input id="moduleId" name="moduleId" type="hidden">
+				         <input id="createTime" name="createTime" type="hidden">
+				         <input id="projectId" name="projectId" type="hidden">
+				         <input id="parentId" name="parentId" type="hidden">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">父模块：</label>
+								<div class="col-sm-8">
+									<input class="form-control" type="text" id="treeName" name="treeName" readonly="true">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">模块名字：</label>
+								<div class="col-sm-8">
+									<input id="moduleName" name="moduleName" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">显示顺序：</label>
+								<div class="col-sm-8">
+									<input id="orderNum" name="orderNum" class="form-control" type="text" value="1">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<textarea id="remark" name="remark" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="layui-form-item">
+						    <div class="layui-input-block" style="text-align: center;">
+						    	 <button class="layui-btn" lay-submit lay-filter="update" >修改</button>
+						      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						    </div>
+						 </div>	
+						</form>
+	    		</div>
+	    	</div>	
 	    </div>
 	</div>
 	<script type="text/html" id="barDemo">
-	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	    {{#  if(d.children.length==0&&d.parentId!=0){ }}
+	  	<a class="btn btn-info btn-xs" lay-event="del"><i class=" glyphicon glyphicon-th"></i>新增</a>
+		<a class="btn btn-primary btn-xs" lay-event="edit"><i class="glyphicon glyphicon-edit"></i>修改</a>
+	  	<a class="btn btn-danger btn-xs" lay-event="remove"> <i class="glyphicon glyphicon-remove"></i>删除</a>
+	  {{#  } else { }}
+	  	<a class="btn btn-info btn-xs" lay-event="del"><i class=" glyphicon glyphicon-th"></i>新增</a>
+	  {{#  } }}
 	</script>
 	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
 	<script>
+		
+		layui.use(['form', 'layedit', 'laydate'], function(){
+			  var form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  ,laydate = layui.laydate;
+			  
+			form.on('submit(formDemo2)', function(data){
+				
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/projectCaseModule/create",
+					data:data.field,
+					success:function(res){
+						layer.confirm("新增成功!",function(){
+							location.href=location.href;
+						});
+						
+					}
+				});
+				return false;
+			});
+			
+			form.on('submit(update)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/projectCaseModule/update",
+					data:data.field,
+					success:function(res){
+						layer.confirm("修改成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+					return false;
+			});
+			
+			
+//			form.on('submit(daor)',function(data){
+//				var formDate = new FormData($("form")[0]);
+//					$.ajax({
+//						url:"http://localhost:8888/projectCaseModule/upalodExcel",
+//						type:"post",
+//						data:formDate,
+//						contentType:false,
+//						processData:false,
+//					})	
+//			})
+			
+		});  
+		
+		
 		layui.config({
 				base: 'js/'
-			}).use(['treeTable',"layer","table"], function () {
+			}).use(['treeTable',"layer","table","form"], function () {
 				    var treeTable = layui.treeTable;
 				    var layer=layui.layer;
 				    var table=layui.table;
-					var data = [{
-						id:"1",
-					    id1: '测试管理',
-					    username: '1',
-					    sex: '#',
-					    city: '#',
-					}, {
-					    pid: '1',
-					   	id:"1_1",
-					    id1: '测试管理',
-					    username: '1',
-					    sex: '#',
-					    city: '#',
-					},{
-					    id:"2",
-					    id1: '测试管理',
-					    username: '1',
-					    sex: '#',
-					    city: '#',
-					},{
-					    pid: '2',
-					    id:"2_1",
-					    id1: '测试管理',
-					    username: '1',
-					    sex: '#',
-					    city: '#',
-					},
-					{
-					    pid: '2_1',
-					    id:"2_2",
-					    id1: '测试管理',
-					    username: '1',
-					    sex: '#',
-					    city: '#',
-					}];
+					var form=layui.form;
 		
 		// 渲染表格
 		var insTb = treeTable.render({
 		    elem: '#test',
-		    data: data,  // 数据
+		    url:"http://localhost:8888/projectCaseModule/find",
+		    treeSpid: '0',		//最上级的父级id
+			treeIdName: 'moduleId',	//id字段的名称
+			treePidName: 'parentId',
 		    tree: {
 		        iconIndex: 1,    // 折叠图标显示在第几列
-		        isPidData: true  // 是否是pid形式数据
 		    },
 		    cols:[[
 		      {type:'radio'}
-		      ,{field:'id1', title: '模块名字'}
-		      ,{field:'username', title: '项目名称'}
-		      ,{field:'sex', title: '显示顺序'}
-			 ,{field:'city', title: '更新时间'}
+		      ,{field:'moduleName', title: '模块名字'}
+		      ,{field:'projectName', title: '项目名称'}
+		      ,{field:'orderNum', title: '显示顺序'}
+			 ,{field:'updateTime', title: '更新时间'}
 		      ,{align: 'center', toolbar: '#barDemo', title: '操作'}
-		    ]]
+		    ]],
+		    parseData:function(res){
+		    	return{
+		    		"code":0
+		    		,"msg":"ok"
+		    		,"data":res
+		    	}
+			},
+			id:"testReload"
 		});
+		
+		  var $ = layui.$, active = {
+		    	reload: function(){
+				   var moduleName = $('#moduleName').val();
+				    var projectId=$("#projectId").val();
+			      //执行重载
+			      insTb.reload({
+			      	where: {
+			        	moduleName:moduleName,
+			        	projectId:projectId
+			        }
+			        ,method:"post"
+			      });
+
+		    }
+		  };
+		  	$('#find').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+		  });
+		
 		
 		var flag=true;
 		$('#expandAllBtn').click(function () {
@@ -162,6 +293,79 @@
 	            flag=true;
 	        }
        	});
+       	
+       	treeTable.on('tool(test)', function(obj){
+		    var data = obj.data;
+		    if(obj.event === 'edit'){
+		      	layer.open({
+	      				title:['修改类型','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});	
+	      			 $.ajax({
+				      	url:"http://localhost:8888/projectCaseModule/findById",
+				      	data:{
+				      		parentId:data.parentId
+				      	},
+				      	success:function(res){
+				      		data.treeName=res.moduleName;
+				      		form.val('example',data);
+				      	}
+				      });
+	      			 
+		   } else if(obj.event === 'del'){
+		   		var data1={"treeName":data.moduleName,"projectId":data.projectId,"parentId":data.moduleId};
+		   		layer.open({
+	      				title:['添加用例模块','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popCreateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+	      			 form.val('example1',data1);
+		    } else if(obj.event === 'remove'){
+		    	
+		      layer.confirm('真的删除行么', function(index){
+		        obj.del();
+		        layer.close(index);
+			      $.ajax({
+			      	url:"http://localhost:8888/projectCaseModule/remove",
+			      	data:{
+			      		moduleId:data.moduleId
+			      	},
+			      	success:function(res){
+			      		layer.alert("删除成功");
+			      		location.href=location.href;
+			      	}
+			      });
+		      
+		      });
+		      
+		    }
+		  });
+		  
+		 	
+		
 			
 		});
 		layui.use('layer', function(){ //独立版的layer无需执行这一句
@@ -177,11 +381,12 @@
 				        ,maxmin: true
 				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 				        ,id: 'layerDemo'+type //防止重复弹出
-				        ,content:$("#popUpdateTest").html()
-				        ,btn: ['确定','取消']
-				        ,btnAlign: 'r' //按钮居中
+				        ,content:$("#daor").html()
+//				        ,btn: ['确定','取消']
+//				        ,btnAlign: 'r' //按钮居中
 				        ,shade: 0 //不显示遮罩
 				        ,yes: function(){
+				        	
 				          layer.closeAll();
 				        }
 	      			});
@@ -201,6 +406,16 @@
   			$("[name=refresh]").click(function(){
   				location.reload();
   			});
+  			$.ajax({
+		    		url:"http://localhost:8888/projectCaseModule/findProject",
+		    		success:function(res){
+		    			console.log(res);
+		    			for(var i=0;i<res.length;i++){
+		    				var opthion="<option value='"+res[i].projectId+"'>"+res[i].projectName+"</option>";
+		    				$("#projectId").append(opthion);
+		    			}
+		    		}
+		   });
   		});
 	</script>
 	</body>

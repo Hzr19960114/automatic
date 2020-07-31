@@ -18,33 +18,33 @@
 	                    <ul class="list-inline">
 	                    	<li>
 								参数名称：
-	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="configName" value="" name="configName"/>
 	                        </li>
 	                        <li>
 								参数键名 ：
-	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="configKey" value="" name="configKey"/>
 	                        </li>
 	                        
 	                        <li>
 	                           	系统内置：
-	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
-	                                <option value="">所有项目</option>
-	                                <option value="2">流程测试项目</option>
-	                                <option value="1">测试项目一</option>
+	                            <select id="configType" name="configType" >
+	                                <option value="全部">所有</option>
+	                                <option value="Y">是</option>
+	                                <option value="N">否</option>
 	                            </select>
 	                        </li>
 	                        <li class="select-time">
 								<label>创建时间： </label>
 								<div class="layui-input-inline">
-							        <input type="text" class="layui-input" id="test11" placeholder="yyyy年MM月dd日">
+							        <input type="text" class="layui-input" id="test11" placeholder="开始时间">
 								<span>-</span>
 							    </div>
 								<div class="layui-input-inline">
-							        <input type="text" class="layui-input" id="test12" placeholder="yyyy年MM月dd日">
+							        <input type="text" class="layui-input" id="test12" placeholder="结束时间">
 							    </div>
 							</li>
 	                        <li>
-	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                            <a class="btn btn-primary btn-rounded btn-sm " id="find" data-type="reload"><i
 	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
 	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
 	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
@@ -56,11 +56,11 @@
 	        
 	        <div class="col-sm-12 select-table table-striped">
 	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
-	                <a class="btn btn-primary add" onclick="$.operate.edit()">
+	               <a class="btn btn-success btn-edit disabled"data-method="offset" data-type="auto" id="xg">
 	                    <i class="fa fa-edit glyphicon glyphicon-edit"></i> 修改
 	                </a>
 					<div class="columns columns-right btn-group pull-right">
-		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索" id="find" data-type="reload">
 		        			<i class="glyphicon glyphicon-search"></i>
 		        		</button>
 		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
@@ -73,187 +73,248 @@
 	        	</div>
 		        <table class="layui-hide" id="test" lay-filter="demo"></table>
 	        </div>
+	        
+	        <div class="layui-row" id="popUpdateTest" style="display:none;">
+	    		<div class="layui-col-md10">
+				    			<form class="form-horizontal m layui-form" id="form-config-edit" novalidate="novalidate" lay-filter="example">
+			            <input id="configId" name="configId" type="hidden" value="1">
+			            <div class="form-group">	
+			                <label class="col-sm-3 control-label">参数名称：</label>
+			                <div class="col-sm-8">
+			                	<input class="form-control" type="hidden" name="configId" >
+										<input class="form-control" type="hidden" name="createTime" >
+			                    <input id="configName" name="configName" class="form-control" type="text" >
+			                </div>
+			            </div>
+			            <div class="form-group">	
+			                <label class="col-sm-3 control-label">参数键名：</label>
+			                <div class="col-sm-8">
+			                    <input id="configKey" name="configKey" class="form-control" type="text" >
+			                </div>
+			            </div>
+			            <div class="form-group">	
+			                <label class="col-sm-3 control-label">参数键值：</label>
+			                <div class="col-sm-8">
+			                    <input id="configValue" name="configValue" class="form-control" type="text">
+			                </div>
+			            </div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">系统内置：</label>
+							<div class="col-sm-8">
+								<input type="radio" name="configType" value="Y" title="是" checked="">
+      							<input type="radio" name="configType" value="N" title="否">
+							</div>
+						</div>
+						<div class="form-group">	
+				            <label class="col-sm-3 control-label">备注：</label>
+				            <div class="col-sm-8">
+				                <textarea id="remark" name="remark" class="form-control"></textarea>
+				            </div>
+				        </div>
+				        <div style="height: 100px;"></div>
+						 <div class="layui-form-item">
+						    <div class="layui-input-block" style="text-align: center;">
+						    	 <button class="layui-btn" lay-submit lay-filter="update" >修改</button>
+						      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						    </div>
+						  </div>
+			    	</form>
+	    		</div>
+	    	</div>	
 	    </div>
 	</div>
 	<script type="text/html" id="barDemo">
-	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">编辑</a>
-	  <a class="layui-btn layui-btn-xs" lay-event="edit">新增</a>
-	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	  <a class="btn btn-primary btn-xs" lay-event="edit"><i class="glyphicon glyphicon-edit"></i>编辑</a>
 	</script>
 	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
 	<script>
+		
+		function resetForm() {
+            $('#configName').val("");
+			    $("#configKey").val("");
+			    $("#configType").val("全部");
+			    $("#test11").val("");
+			    $("#test12").val("");
+        }
+		
 		layui.use('laydate', function(){
 			var laydate = layui.laydate;
 			laydate.render({
 			    elem: '#test11'
-			    ,format: 'yyyy年MM月dd日'
+			   ,type: 'date'
 			});
 			laydate.render({
 			    elem: '#test12'
-			    ,format: 'yyyy年MM月dd日'
+			   ,type: 'date'
 			});
 		});
-		layui.use('table', function(){
+		
+		
+		 layui.use(['form', 'layedit', 'laydate'], function(){
+			  var form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  ,laydate = layui.laydate;
+
+
+			
+			form.on('submit(update)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/sysConfig/update",
+					data:data.field,
+					success:function(res){
+						layer.confirm("修改成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+					return false;
+			});
+		});  
+		
+		layui.use(['table','form'], function(){
 		  var table = layui.table;
-		  //《工具栏》
-		  //监听工具条
-		  table.on('tool(demo)', function(obj){
-		    var data = obj.data;
-		    if(obj.event === 'detail'){
-		      layer.msg('id：'+ data.id + ' 的查看操作');
-		    } else if(obj.event === 'del'){
-		      layer.confirm('真的删除行么', function(index){
-		        obj.del();
-		        layer.close(index);
-		      });
-		    } else if(obj.event === 'edit'){
-		      layer.alert('编辑行：<br>'+ JSON.stringify(data))
-		    }
-		  });
-		  
-		   var $ = layui.$, active = {
-		    getCheckData: function(){ //获取选中数据
-		      var checkStatus = table.checkStatus('test')
-		      ,data = checkStatus.data;
-		      layer.alert(JSON.stringify(data));
-		    }
-		    ,getCheckLength: function(){ //获取选中数目
-		      var checkStatus = table.checkStatus('test')
-		      ,data = checkStatus.data;
-		      layer.msg('选中了：'+ data.length + ' 个');
-		    }
-		    ,isAll: function(){ //验证是否全选
-		      var checkStatus = table.checkStatus('test');
-		      layer.msg(checkStatus.isAll ? '全选': '未全选')
-		    }
-		  };
-		    $('.demoTable .layui-btn').on('click', function(){
-			    var type = $(this).data('type');
-			    active[type] ? active[type].call(this) : '';
-			  });
-		  //《/工具栏》
+		  var form=layui.form;
 		  table.render({
 		    elem: '#test'
 		    /*,url:'/demo/table/user/'*/
+		   ,url:"http://localhost:8888/sysConfig/find"
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '参数主键'}
-		      ,{field:'username', title: '参数名称'}
-		      ,{field:'sex', title: '参数键名'}
-		      ,{field:'city', title: '参数键值'}
-		      ,{field:'city', title: '系统内置'}
-		      ,{field:'city', title: '备注'}
-		      ,{field:'city', title: '创建时间'}
-		      ,{field:'city', title: '操作'}
+		      ,{field:'configId', title: '参数主键'}
+		      ,{field:'configName', title: '参数名称'}
+		      ,{field:'configKey', title: '参数键名'}
+		      ,{field:'configValue', title: '参数键值'}
+		      ,{field:'configType', title: '系统内置'}
+		      ,{field:'remark', title: '备注'}
+		      ,{field:'createTime', title: '创建时间'}
+		      ,{field:'city', title: '操作',toolbar: '#barDemo'}
 		    ]]
-		    ,data:[
-		    	{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    	,{"id":"1",'username':"lzz",'sex':"男",'city':"2002-02-02"}
-		    ]
-		    ,page: true
+		    ,page: { //分页设定
+                layout: ['count', 'prev', 'page', 'next'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10//每页多少数据
+                , groups: 5 //只显示 5 个连续页码
+            }
+		    ,parseData:function(res){
+		    	for(var i=0;i<res.list.length;i++){
+		    		if(res.list[i].configType=="Y"){
+		    			res.list[i].configType="是";
+		    		}else{
+		    			res.list[i].configType="否";
+		    		}
+		    	}
+		    	return{
+		    		"code":0,
+		    		"msg":"",
+		    		"count":res.pages,
+		    		data:res.list
+		    	}
+		    }
+		    ,id: 'testReload'
 		  });
-		});
-		layui.use('layer', function(){ //独立版的layer无需执行这一句
-			var active = {
-				offset: function(othis){
-      				var type = othis.data('type');
-	      			layer.open({
-	      				title:['添加测试任务调度','color:#333333;background-color:#f8f8f8;'], 
+		  
+		   var $ = layui.$, active = {
+		    	reload: function(){
+				   var configName = $('#configName').val();
+				    var configKey=$("#configKey").val();
+				    var configType=$("#configType").val();
+				    var createTime=$("#test11").val();
+			    	var updateTime=$("#test12").val();
+			      //执行重载
+			      table.reload('testReload', {
+			        page: {
+			          curr: 1 //重新从第 1 页开始
+			        }
+			        ,where: {
+			        	configName:configName,
+			        	configKey:configKey,
+			        	configType:configType,
+			        	createTime:createTime,
+		        		updateTime:updateTime
+			        }
+			        ,method:"post"
+			      });
+
+		    }
+		  };
+		  	$('#find').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+		  });
+		  
+		  var shuju={};
+		   table.on('checkbox(demo)', function(obj){
+		   	 var checkStatus = table.checkStatus('testReload')
+      		,data = checkStatus.data;
+		   	if(data.length==0){
+		   		$("#xg").addClass("disabled");
+		  	}else if(data.length==1){
+		  		$("#xg").removeClass("disabled");
+		  		shuju=data[0];
+		  	}else{
+		  		$("#xg").addClass("disabled");	
+		  	}
+	  
+  			});
+  			
+  			$("#xg").on('click', function(){
+  				layer.open({
+	      				title:['修改参数','color:#333333;background-color:#f8f8f8;'], 
 						type: 1
 						,area: ['800px', '676px']
 				        ,shade: 0
 				        ,maxmin: true
-				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-				        ,id: 'layerDemo'+type //防止重复弹出
-				        ,content:`
-				        <form class="form-horizontal m" id="form-config-edit" novalidate="novalidate">
-            <input id="configId" name="configId" type="hidden" value="1">
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">参数名称：</label>
-                <div class="col-sm-8">
-                    <input id="configName" name="configName" class="form-control" type="text" value="主框架页-默认皮肤样式名称">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">参数键名：</label>
-                <div class="col-sm-8">
-                    <input id="configKey" name="configKey" class="form-control" type="text" value="sys.index.skinName">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">参数键值：</label>
-                <div class="col-sm-8">
-                    <input id="configValue" name="configValue" class="form-control" type="text" value="skin-blue">
-                </div>
-            </div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">系统内置：</label>
-				<div class="col-sm-8">
-				    <div class="radio-box">
-						<div class="iradio-blue checked"><input type="radio" id="10" name="configType" value="Y" checked="checked" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-						<label for="10">是</label>
-					</div>
-				    <div class="radio-box">
-						<div class="iradio-blue"><input type="radio" id="11" name="configType" value="N" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-						<label for="11">否</label>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">	
-	            <label class="col-sm-3 control-label">备注：</label>
-	            <div class="col-sm-8">
-	                <textarea id="remark" name="remark" class="form-control">蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow</textarea>
-	            </div>
-	        </div>
-    	</form>
-				        `
-				        ,btn: ['确定','取消']
-				        ,btnAlign: 'r' //按钮居中
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
 				        ,shade: 0 //不显示遮罩
 				        ,yes: function(){
 				          layer.closeAll();
 				        }
 	      			});
-    			}
-			}
-			$('.add').on('click', function(){
-			    var othis = $(this), method = othis.data('method');
-			    active[method] ? active[method].call(this, othis) : '';
-			});
-  		});
-  		
+	      			if(shuju.configType=="是"){
+		    			shuju.configType="Y";
+		    		}else{
+		    			shuju.configType="N";
+		    		}
+	      			 form.val('example',shuju);
+		   });
+		   
+		    table.on('tool(demo)', function(obj){
+		    var data = obj.data;
+		    if(obj.event === 'edit'){
+		      layer.open({
+	      				title:['修改参数','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      		});
+	      			if(data.configType=="是"){
+		    			data.configType="Y";
+		    		}else{
+		    			data.configType="N";
+		    		}
+	      			 form.val('example',data);
+		    }
+		  });
+		});
   		
   		$(function(){
   			$("[name=showSearch]").click(function(){

@@ -19,19 +19,19 @@
 	
 	                        <li>
 								字典名称：
-	                            <input type="text"  id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="dictName" value=""/>
 	                        </li>
 	
 	                        <li>
 	                           	字典类型：
-	                            <input type="text"  id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="dictType"  value=""/>
 	                        </li>
 							
 							<li>
 	                           	字典状态：
-	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
-	                                <option value="">所有</option>
-	                                <option value="2">正常</option>
+	                            <select id="status" name="projectId" >
+	                                <option value="全部">所有</option>
+	                                <option value="0">正常</option>
 	                                <option value="1">停用</option>
 	                            </select>
 	                        </li>
@@ -48,7 +48,7 @@
 							</li>
 							
 	                        <li>
-	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                            <a class="btn btn-primary btn-rounded btn-sm "	id="find"  data-type="reload"><i
 	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
 	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
 	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
@@ -63,13 +63,13 @@
 	                <a class="btn btn-primary add"data-method="offset" data-type="auto">
 	                    <i class="glyphicon glyphicon-plus"></i> 新增
 	                </a>
-	                 <a class="btn btn-success btn-edit disabled"data-method="offset" data-type="auto">
+	                 <a class="btn btn-success btn-edit disabled"data-method="offset" data-type="auto" id="xg">
 	                    <i class="glyphicon glyphicon-edit"></i> 修改
 	                </a>
-	                 <a class="btn btn-danger btn-edit disabled"data-method="offset" data-type="auto">
+	                 <a class="btn btn-danger btn-edit disabled"data-method="offset" data-type="auto" id="sc">
 	                    <i class="glyphicon glyphicon-remove"></i> 删除
 	                </a>
-	                 <a class="btn btn-warning" onclick="$.operate.removeAll()">
+	                 <a class="btn btn-warning" id="dc">
 	                    <i class="glyphicon glyphicon-save"></i> 导出
 	                </a>
 					<div class="columns columns-right btn-group pull-right">
@@ -85,73 +85,52 @@
 		        			 	        		
 					</div>
 				</div>
-		        <table class="layui-hide" id="test"></table>
+		        <table class="layui-hide" id="test" lay-filter="demo"></table>
 	        </div>
-	    </div>
-	</div>
-	<script type="text/html" id="barDemo">
-	  <a class="btn btn-primary btn-xs" lay-event="detail"><i class="glyphicon glyphicon-edit"></i>编辑</a>
-	  <a class="btn btn-info btn-xs" lay-event="edit" href="zidianshuju.html"><i class=" glyphicon glyphicon-th"></i>列表</a>
-	  <a class="btn btn-danger btn-xs" lay-event="del"> <i class="glyphicon glyphicon-remove"></i>删除</a>
-	</script>
-	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
-	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
-	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
-	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
-	<script>
-		layui.use('laydate', function(){
-			var laydate = layui.laydate;
-			laydate.render({
-			    elem: '#test11'
-			    ,format: 'yyyy年MM月dd日'
-			});
-			laydate.render({
-			    elem: '#test12'
-			    ,format: 'yyyy年MM月dd日'
-			});
-		});
-		
-		layui.use('table', function(){
-		  var table = layui.table;
-		  table.render({
-		    elem: '#test'
-		    ,cols: [[
-		      {type:'checkbox'}
-		      ,{field:'id', title: '字典主键'}
-		      ,{field:'username', title: '字典名称',sort: true}
-		      ,{field:'sex', title: '字典类型',sort: true}
-			 ,{field:'city', title: '备注',style:'background-color: #1Ab394;color:#fff',width:70}
-		      ,{field:'city2', title: '状态'}
-		      ,{field:'sign', title: '创建时间',sort: true}
-		      ,{field:'wealth3', title: '操作',toolbar: '#barDemo'}
-		    ]]
-		     ,data: [{
-		      "id": "10001"
-		      ,"username": "杜甫"
-		      ,"email": "xianxin@layui.com"
-		      ,"sex": "男"
-		      ,"city2": "浙江杭州"
-		      ,"city": "正常"
-		      ,"sign": "人生恰似一场修行"
-		    }]
-		    ,page: true
-		  });
-		});
-		
-		layui.use('layer', function(){ //独立版的layer无需执行这一句
-			var active = {
-				offset: function(othis){
-      				var type = othis.data('type');
-	      			layer.open({
-	      				title:['添加类型','color:#333333;background-color:#f8f8f8;'], 
-						type: 1
-						,area: ['800px', '676px']
-				        ,shade: 0
-				        ,maxmin: true
-				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-				        ,id: 'layerDemo'+type //防止重复弹出
-				        ,content:`
-				        	<form class="form-horizontal m" id="form-dict-add" novalidate="novalidate">
+	        <div class="layui-row" id="popUpdateTest" style="display:none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form" id="form-dict-add" novalidate="novalidate" lay-filter="example">
+								<div class="form-group">
+									<label class="col-sm-3 control-label ">字典名称：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="hidden" name="dictId" >
+										<input class="form-control" type="hidden" name="createTime" >
+										<input class="form-control" type="text" name="dictName" id="dictName">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">字典类型：</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" name="dictType" id="dictType">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">状态：</label>
+									<div class="col-sm-8">
+										 <input type="radio" name="status" value="0" title="正常" checked="">
+      									<input type="radio" name="status" value="1" title="停用">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">备注：</label>
+									<div class="col-sm-8">
+										<textarea id="remark" name="remark" class="form-control"></textarea>
+									</div>
+								</div>
+								<div style="height: 100px;"></div>
+								<div class="layui-form-item">
+								    <div class="layui-input-block" style="text-align: center;">
+								    	 <button class="layui-btn" lay-submit lay-filter="update" >修改</button>
+								      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								    </div>
+								  </div>
+							</form>
+	    		</div>
+	    	</div>	
+	    	
+	    	<div class="layui-row" id="popCreateTest" style="display:none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form" id="form-dict-add" novalidate="novalidate" lay-filter="example1">
 								<div class="form-group">
 									<label class="col-sm-3 control-label ">字典名称：</label>
 									<div class="col-sm-8">
@@ -167,14 +146,8 @@
 								<div class="form-group">
 									<label class="col-sm-3 control-label">状态：</label>
 									<div class="col-sm-8">
-									    <div class="radio-box">
-											<div class="iradio-blue checked"><input type="radio" id="6" name="status" value="0" checked="checked"></div>
-											<label for="6">正常</label>
-										</div>
-									    <div class="radio-box">
-											<div class="iradio-blue"><input type="radio" id="7" name="status" value="1" ></div>
-											<label for="7" class="">停用</label>
-										</div>
+										 <input type="radio" name="status" value="0" title="正常" checked="">
+      									<input type="radio" name="status" value="1" title="停用">
 									</div>
 								</div>
 								<div class="form-group">
@@ -183,22 +156,311 @@
 										<textarea id="remark" name="remark" class="form-control"></textarea>
 									</div>
 								</div>
+								<div style="height: 100px;"></div>
+								 <div class="layui-form-item">
+								    <div class="layui-input-block" style="text-align: center;">
+								    	 <button class="layui-btn" lay-submit lay-filter="formDemo2" >新增</button>
+								      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								    </div>
+								  </div>
 							</form>
-				        `
-				        ,btn: ['确定','关闭']
-				        ,btnAlign: 'r' //按钮居中
+	    		</div>
+	    	</div>	
+	    </div>
+	</div>
+	<script type="text/html" id="barDemo">
+	  <a class="btn btn-primary btn-xs" lay-event="edit"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+	  <a class="btn btn-info btn-xs" lay-event="del"><i class=" glyphicon glyphicon-th"></i>列表</a>
+	  <a class="btn btn-danger btn-xs" lay-event="remove"> <i class="glyphicon glyphicon-remove"></i>删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		
+		 function resetForm() {
+            $('#dictName').val("");
+			    $("#dictType").val("");
+			    $("#status").val("全部");
+			    $("#test11").val("");
+			    $("#test12").val("");
+        }
+		 
+		 layui.use(['form', 'layedit', 'laydate'], function(){
+			  var form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  ,laydate = layui.laydate;
+			  
+			form.on('submit(formDemo2)', function(data){
+				
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/sysDictType/create",
+					data:data.field,
+					success:function(res){
+						layer.confirm("新增成功!",function(){
+							location.href=location.href;
+						});
+						
+					}
+				});
+				return false;
+			});
+			
+			form.on('submit(update)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/sysDictType/update",
+					data:data.field,
+					success:function(res){
+						layer.confirm("修改成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+					return false;
+			});
+		});  
+		 
+		 
+		layui.use('laydate', function(){
+			
+			var laydate = layui.laydate;
+			laydate.render({
+			    elem: '#test11'
+			   ,type: 'datetime'
+			});
+			laydate.render({
+			    elem: '#test12'
+			   ,type: 'datetime'
+			});
+		});
+		
+		layui.use(['table','form'], function(){
+			 var form = layui.form
+		  var table = layui.table;
+		  var tableIns =table.render({
+		    elem: '#test'
+		    ,url:"http://localhost:8888/sysDictType/find"
+		    ,cols: [[
+		      {type:'checkbox'}
+		      ,{field:'dictId', title: '字典主键'}
+		      ,{field:'dictName', title: '字典名称',sort: true}
+		      ,{field:'dictType', title: '字典类型',sort: true}
+		      ,{field:'status', title: '状态',style:'background-color: #1Ab394;color:#fff',width:70}
+			  ,{field:'remark', title: '备注'}		     
+		      ,{field:'createTime', title: '创建时间',sort: true}
+		      ,{field:'wealth3', title: '操作',toolbar: '#barDemo'}
+		    ]]
+		    ,page: { //分页设定
+                layout: ['count', 'prev', 'page', 'next'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10//每页多少数据
+                , groups: 5 //只显示 5 个连续页码
+            }
+		    ,parseData:function(res){
+		    	for(var i=0;i<res.list.length;i++){
+		    		if(res.list[i].status=="0"){
+		    			res.list[i].status="正常";
+		    		}else{
+		    			res.list[i].status="停用";
+		    		}
+		    	}
+		    	return{
+		    		"code":0,
+		    		"msg":"",
+		    		"count":res.pages,
+		    		data:res.list
+		    	}
+		    }
+		    ,id: 'testReload'
+//		    , done: function(res, curr, count){
+//		    	$("[data-field='status']").children().each(function(){
+//			     if($(this).text()=='0'){
+//			      $(this).text("正常")
+//			     }else if($(this).text()=='1'){
+//			      $(this).text("停用")
+//			     }
+//			    });
+//			}
+		  });
+		  
+		  var $ = layui.$, active = {
+		    reload: function(){
+			    var dictName = $('#dictName').val();
+			    var dictType=$("#dictType").val();
+			    var status=$("#status").val();
+			    var createTime=$("#test11").val();
+			    var updateTime=$("#test12").val();
+		      //执行重载
+		      table.reload('testReload', {
+		        page: {
+		          curr: 1 //重新从第 1 页开始
+		        }
+		        ,where: {
+		        	dictName:dictName,
+		        	dictType:dictType,
+		        	status:status,
+		        	createTime:createTime,
+		        	updateTime:updateTime
+		        },
+		        method:"post"
+		      });
+
+		    }
+		  };
+		  
+		  var shuju={};
+		   table.on('checkbox(demo)', function(obj){
+		   	 var checkStatus = table.checkStatus('testReload')
+      		,data = checkStatus.data;
+		   	if(data.length==0){
+		   		$("#xg").addClass("disabled");
+		   		$("#sc").addClass("disabled");
+		  	}else if(data.length==1){
+		  		$("#xg").removeClass("disabled");
+		  		shuju=data[0];
+		  		$("#sc").removeClass("disabled");
+		  	}else{
+		  		$("#sc").removeClass("disabled");
+		  		$("#xg").addClass("disabled");	
+		  	}
+	  
+  			});
+  			
+  			$(".add").on('click',function(){
+  				layer.open({
+	      				title:['修改类型','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popCreateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
 				        ,shade: 0 //不显示遮罩
 				        ,yes: function(){
 				          layer.closeAll();
 				        }
 	      			});
-    			}
-			}
-			$('.add').on('click', function(){
-			    var othis = $(this), method = othis.data('method');
-			    active[method] ? active[method].call(this, othis) : '';
-			});
-  		});
+	      			 form.val('example1',shuju);
+  			});
+  			
+  			$("#xg").on('click', function(){
+  				layer.open({
+	      				title:['修改类型','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+	      			if(shuju.status=="正常"){
+		    			shuju.status="0";
+		    		}else{
+		    			shuju.status="1";
+		    		}
+	      			 form.val('example',shuju);
+		   });
+		   
+		   $("#sc").on('click', function(){
+		   		var checkStatus = table.checkStatus('testReload')
+      			,data = checkStatus.data;
+      			var str=JSON.stringify(data);
+      			layer.confirm('确定要删除选中的'+data.length+'条数据吗？', function(index){
+      				 layer.close(index);
+      				 $.ajax({
+      				 	url:"http://localhost:8888/sysDictType/removeList",
+				      	method:"post",
+						data:str,
+						contentType:"application/json;charset=utf-8",
+				      	success:function(res){
+				      		 tableIns.reload();
+				      		layer.alert("删除成功");
+				      		$("#sc").addClass("disabled");
+				      	}
+      				 });
+      			 });
+      			
+		   	});
+		   	
+		   	$("#dc").on('click',function(){
+		   		var dictName = $('#dictName').val();
+			    var dictType=$("#dictType").val();
+			    var status=$("#status").val();
+			    var createTime=$("#test11").val();
+			    var updateTime=$("#test12").val();
+		   		var url="?dictName="+dictName+"&dictType="+dictType+"&status="+status+"&createTime="+createTime+"&updateTime"+updateTime;
+		   		location.href="http://localhost:8888/sysDictType/exportExcel"+url;
+		   	});
+		   
+		  $('#find').on('click', function(){
+		    var type = $(this).data('type');
+		    active[type] ? active[type].call(this) : '';
+		  });
+		  
+		  table.on('tool(demo)', function(obj){
+		    var data = obj.data;
+		    if(obj.event === 'edit'){
+		      layer.open({
+	      				title:['修改类型','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '676px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+	      			if(data.status=="正常"){
+		    			data.status="0";
+		    		}else{
+		    			data.status="1";
+		    		}
+	      			 form.val('example',data);
+		    } else if(obj.event === 'del'){
+		    	sessionStorage.setItem("dictType",data.dictType);
+
+		      	location.href="zidianshuju.html";
+		    } else if(obj.event === 'remove'){
+		      layer.confirm('真的删除行么', function(index){
+		        obj.del();
+		        layer.close(index);
+			      $.ajax({
+			      	url:"http://localhost:8888/sysDictType/remove",
+			      	data:{
+			      		dictId:data.dictId
+			      	},
+			      	success:function(res){
+			      		layer.alert("删除成功");
+			      	}
+			      });
+		      
+		      });
+		      
+		    }
+		  });
+		});
+		
+		
   		$(function(){
   			$("[name=showSearch]").click(function(){
   				$(".search-collapse").slideToggle();
@@ -206,6 +468,7 @@
   			$("[name=refresh]").click(function(){
   				location.reload();
   			});
+  			
   		});
 	</script>	
 </html>

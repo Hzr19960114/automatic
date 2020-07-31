@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
+		<link rel="stylesheet" type="text/css" href="elementui/index.css"/>
+		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
+	</head>
+		<body class="gray-bg">
+	<div class="container-div" id="ctx">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="clazz-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								学号：<input type="text" name="studentNo" id="studentNo">
+							</li>
+							<li>
+								姓名：<input type="text" name="studentName" id="studentName">
+							</li>
+							<li>
+								班级名称：
+								<select name="clazzId" id="clazzId" class="clazzId">
+									
+								</select>
+							</li>
+							<li>
+	                            <a class="btn btn-primary btn-rounded btn-sm "  id="find"  data-type="reload"><i
+	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
+	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
+	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
+	                        </li>
+						</ul>
+					</div>
+				</form>
+			</div>
+                
+            
+       		  <div class="col-sm-12 select-table table-striped">
+	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
+	                <a class="btn btn-primary add"data-method="offset" data-type="auto">
+	                    <i class="glyphicon glyphicon-plus"></i> 新增
+	                </a>
+					<div class="columns columns-right btn-group pull-right">
+		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
+		        			<i class="glyphicon glyphicon-search"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新">
+		        			<i class="glyphicon glyphicon-refresh icon-refresh"></i>
+		        		</button>
+		        		<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+		        			<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+		        		</button>
+	        		</div>
+	        	</div>
+	        	<table class="layui-hide" id="test" lay-filter="demo"></table>
+	        </div>	
+	        
+	         <div class="layui-row" id="popCreateTest" style="display: none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form" id="form-student-add" novalidate="novalidate"  lay-filter="example1">
+						<input id="treeId" name="clazzId" type="hidden" value="1">
+						<div class="form-group">
+							<label class="col-sm-3 control-label ">所属班级：</label>
+							<div class="col-sm-8">
+								<select class="clazzId" name="clazzId">
+									
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">学号：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" name="studentNo" id="studentNo">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label">姓名：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" name="studentName" id="studentName">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">联系电话：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" name="studentPhone" id="studentPhone">
+							</div>
+						</div>
+						<div class="layui-form-item">
+						    <div class="layui-input-block" style="text-align: center;">
+						    	 <button class="layui-btn" lay-submit lay-filter="formDemo2" >新增</button>
+						      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						    </div>
+						 </div>	
+					</form>
+	    		</div>
+	    	</div>	
+	    	
+	    	<div class="layui-row" id="popUpdateTest" style="display: none;">
+	    		<div class="layui-col-md10">
+	    			<form class="form-horizontal m layui-form" id="form-student-add" novalidate="novalidate"  lay-filter="example">
+						<input id="treeId" name="clazzId" type="hidden" value="1">
+						<div class="form-group">
+							<label class="col-sm-3 control-label ">所属班级：</label>
+							<div class="col-sm-8">
+								<input type="hidden" name="delFlag"/>
+								<select class="clazzId" name="clazzId">
+									
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">学号：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" name="studentNo" id="studentNo">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label">姓名：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" name="studentName" id="studentName">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">联系电话：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" name="studentPhone" id="studentPhone">
+							</div>
+						</div>
+						<div class="layui-form-item">
+						    <div class="layui-input-block" style="text-align: center;">
+						    	 <button class="layui-btn" lay-submit lay-filter="update" >修改</button>
+						      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						    </div>
+						 </div>	
+					</form>
+	    		</div>
+	    	</div>	
+	    	
+	        
+	</div>
+	</div>
+	<script type="text/html" id="barDemo">
+	    <a class="btn btn-primary btn-xs" lay-event="edit"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+	  <a class="btn btn-danger btn-xs" lay-event="remove"> <i class="glyphicon glyphicon-remove"></i>删除</a>
+	</script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="elementui/index.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+
+	<script>
+		
+		
+		
+		layui.use(['form', 'layedit', 'laydate'], function(){
+			  var form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  ,laydate = layui.laydate;
+			  
+			form.on('submit(formDemo2)', function(data){
+				
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/sysStudent/create",
+					data:data.field,
+					success:function(res){
+						layer.confirm("新增成功!",function(){
+							location.href=location.href;
+						});
+						
+					}
+				});
+				return false;
+			});
+			
+			form.on('submit(update)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/sysStudent/update",
+					data:data.field,
+					success:function(res){
+						layer.confirm("修改成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+					return false;
+			});
+			
+		});  
+		 
+		
+		
+		layui.use(['table','form'], function(){
+		var form=layui.form;
+		  var table = layui.table;
+		  var tableIns=table.render({
+		    elem: '#test'
+		    /*,url:'/demo/table/user/'*/
+		    ,url:"http://localhost:8888/sysStudent/find"
+		    ,cols: [[
+		      {field:'studentNo', title: '学号'}
+		      ,{field:'studentName', title: '学生名称'}
+		      ,{field:'studentPhone', title: '联系电话'}
+		      ,{field:'city', title: '操作', toolbar: '#barDemo'}
+		    ]]
+		   ,page: { //分页设定
+                layout: ['count', 'prev', 'page', 'next'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10//每页多少数据
+                , groups: 5 //只显示 5 个连续页码
+            }
+		    ,parseData:function(res){
+		    	return{
+		    		"code":0,
+		    		"msg":"",
+		    		"count":res.pages,
+		    		data:res.list
+		    	}
+		    }
+		    ,id: 'testReload'
+		  });
+		  
+		  var $ = layui.$, active = {
+		    	reload: function(){
+				   var studentNo = $('#studentNo').val();
+				    var studentName=$("#studentName").val();
+				    var clazzId=$("#clazzId").val();
+			      //执行重载
+			      table.reload('testReload', {
+			        page: {
+			          curr: 1 //重新从第 1 页开始
+			        }
+			        ,where: {
+			        	studentNo:studentNo,
+			        	studentName:studentName,
+			        	clazzId:clazzId
+			        }
+			        ,method:"post"
+			      });
+
+		    }
+		  };
+		  	$('#find').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+		  });
+		  
+		  $('.add').on('click', function(){
+			    layer.open({
+	      				title:['添加学生','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo1'+"auto" //防止重复弹出
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' 
+				        ,content:$("#popCreateTest").html()
+				        ,shade: 0 //不显示遮罩
+	      			});
+	      			 form.val('example1',{});
+			});
+			
+			table.on('tool(demo)', function(obj){
+		    var data = obj.data;
+		    if(obj.event === 'edit'){
+		    	data.delFlag=data.studentNo;
+		      layer.open({
+	      				title:['修改学生','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				          layer.closeAll();
+				        }
+	      			});
+	      			 form.val('example',data);
+		    } else if(obj.event === 'remove'){
+		      layer.confirm('真的删除行么', function(index){
+		        obj.del();
+		        layer.close(index);
+			      $.ajax({
+			      	url:"http://localhost:8888/sysStudent/remove",
+			      	data:{
+			      		studentNo:data.studentNo
+			      	},
+			      	success:function(res){
+			      		layer.alert("删除成功");
+			      	}
+			      });
+		      
+		      });
+		      
+		    }
+		  });
+		});   
+		 
+		 $(function(){
+  			$("[name=showSearch]").click(function(){
+  				$(".search-collapse").slideToggle();
+  			});
+  			$("[name=refresh]").click(function(){
+  				location.reload();
+  			});
+  			
+  			$.ajax({
+		    		url:"http://localhost:8888/sysStudent/findClazz",
+		    		success:function(res){
+		    			console.log(res);
+		    			for(var i=0;i<res.length;i++){
+		    				var opthion="<option value='"+res[i].clazzId+"'>"+res[i].clazzName+"</option>";
+		    				$(".clazzId").append(opthion);
+		    			}
+		    		}
+		   });
+  		});
+	</script>
+	</body>
+</html>

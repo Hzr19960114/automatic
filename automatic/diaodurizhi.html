@@ -19,19 +19,19 @@
 	
 	                        <li>
 								任务名称：
-	                            <input type="text"  id="treeName"  value=""/>
+	                            <input type="text"  id="jobName"  value=""/>
 	                        </li>
 	
 	                        <li>
 	                           	方法名称：
-	                            <input type="text"  id="treeName" value=""/>
+	                            <input type="text"  id="methodName" value=""/>
 	                        </li>
 							
 							 <li>
 	                           	执行状态：
-	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
-	                                <option value="">所有</option>
-	                                <option value="2">成功</option>
+	                            <select id="status" name="status" onchange="initializeModuleTree()">
+	                                <option value="全部">所有</option>
+	                                <option value="0">成功</option>
 	                                <option value="1">失败</option>
 	                            </select>
 	                        </li>
@@ -48,7 +48,7 @@
 							</li>
 							
 	                        <li>
-	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                            <a class="btn btn-primary btn-rounded btn-sm " id="find" data-type="reload"><i
 	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
 	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
 	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
@@ -60,13 +60,13 @@
 	        
 	        <div class="col-sm-12 select-table table-striped">
 	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
-	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+	                <a class="btn btn-danger btn-del btn-del disabled" id="sc">
 	                    <i class="glyphicon glyphicon-remove"></i> 删除
 	                </a>
-	                <a class="btn btn-danger" onclick="$.operate.removeAll()">
+	                <a class="btn btn-danger" id="qk">
 	                    <i class="glyphicon glyphicon-trash"></i> 清空
 	                </a>
-	                <a class="btn btn-warning" onclick="$.operate.removeAll()">
+	                <a class="btn btn-warning" id="dc">
 	                    <i class="glyphicon glyphicon-save"></i> 导出
 	                </a>
 					<div class="columns columns-right btn-group pull-right">
@@ -82,63 +82,187 @@
 		        			        		
 					</div>
 				</div>
-		        <table class="layui-hide" id="test"></table>
+		        <table class="layui-hide" id="test" lay-filter="demo"></table>
 	        </div>
 	    </div>
 	</div>
 	<script type="text/html" id="barDemo">
-	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	  <!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+	  <a class="btn btn-danger btn-xs" lay-event="remove"> <i class="glyphicon glyphicon-remove"></i>删除</a>
 	</script>
 	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
 	<script>
+		 function resetForm() {
+            	$('#jobName').val("");
+			    $("#methodName").val("");
+			    $("#status").val("全部");
+			    $("#test11").val("");
+			    $("#test12").val("");
+        }
+		 
 		layui.use('laydate', function(){
 			var laydate = layui.laydate;
 			laydate.render({
 			    elem: '#test11'
-			    ,format: 'yyyy年MM月dd日'
+			   ,type: 'date'
 			});
 			laydate.render({
 			    elem: '#test12'
-			    ,format: 'yyyy年MM月dd日'
+			   ,type: 'date'
 			});
 		});
 		
 		layui.use('table', function(){
 		  var table = layui.table;
-		  table.render({
+		  var tableIns=table.render({
 		    elem: '#test'
+		    ,url:"http://localhost:8888/sysJobLog/find"
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '日志编号'}
-		      ,{field:'username', title: '任务名称',sort: true}
-		      ,{field:'sex', title: '任务组名',sort: true}
-		      ,{field:'city', title: '方法名称'}
-		      ,{field:'sign', title: '方法参数'}
-		      ,{field:'experience', title: '日志信息'}
-		      ,{field:'score', title: '状态'}
-		      ,{field:'classify', title: '创建时间',sort: true}
+		      ,{field:'jobLogId', title: '日志编号'}
+		      ,{field:'jobName', title: '任务名称',sort: true}
+		      ,{field:'jobGroup', title: '任务组名',sort: true}
+		      ,{field:'methodName', title: '方法名称'}
+		      ,{field:'methodParams', title: '方法参数'}
+		      ,{field:'jobMessage', title: '日志信息'}
+		      ,{field:'status', title: '状态'}
+		      ,{field:'createTime', title: '创建时间',sort: true}
 		      ,{field:'wealth3', title: '操作',toolbar: '#barDemo'}
 		    ]]
-		     ,data: [{
-		      "id": "10001"
-		      ,"username": "杜甫"
-		      ,"email": "xianxin@layui.com"
-		      ,"sex": "男"
-		      ,"city": "浙江杭州"
-		      ,"sign": "人生恰似一场修行"
-		      ,"experience": "116"
-		      ,"score": "192.168.0.8"
-		      ,"classify": "108"
-		      ,"wealth": "2016-10-14"
-		      ,"wealth1": "2016-10-14"
-		      ,"wealth2": "2016-10-14"
-		    }]
-		    ,page: true
+		   ,page: { //分页设定
+                layout: ['count', 'prev', 'page', 'next'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10//每页多少数据
+                , groups: 5 //只显示 5 个连续页码
+           },parseData:function(res){
+		    	for(var i=0;i<res.list.length;i++){
+		    		if(res.list[i].status=="0"){
+		    			res.list[i].status="成功";
+		    		}else{
+		    			res.list[i].status="失败";
+		    		}
+		    	}
+		    	return{
+		    		"code":0,
+		    		"msg":"",
+		    		"count":res.pages,
+		    		data:res.list
+		    	}
+		    }
+		    ,id: 'testReload' 
 		  });
+		  
+		  var $ = layui.$, active = {
+		    	reload: function(){
+				   var jobName = $('#jobName').val();
+				    var methodName=$("#methodName").val();
+				    var status=$("#status").val();
+				    var createTime=$("#test11").val();
+			    	var updateTime=$("#test12").val();
+			      //执行重载
+			      table.reload('testReload', {
+			        page: {
+			          curr: 1 //重新从第 1 页开始
+			        }
+			        ,where: {
+			        	jobName:jobName,
+			        	methodName:methodName,
+			        	status:status,
+			        	createTime:createTime,
+		        		updateTime:updateTime
+			        }
+			        ,method:"post"
+			      });
+
+		    }
+		  };
+		  	$('#find').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+		  });
+		  
+		   table.on('checkbox(demo)', function(obj){
+		   	 var checkStatus = table.checkStatus('testReload')
+      		,data = checkStatus.data;
+		   	if(data.length==0){
+		   		$("#sc").addClass("disabled");
+		  	}else if(data.length==1){
+		  		$("#sc").removeClass("disabled");
+		  	}else{
+		  		$("#sc").removeClass("disabled");
+		  	}
+	  
+  			});
+  			
+  			$("#sc").on('click', function(){
+		   		var checkStatus = table.checkStatus('testReload')
+      			,data = checkStatus.data;
+      			var str=JSON.stringify(data);
+      			layer.confirm('确定要删除选中的'+data.length+'条数据吗？', function(index){
+      				 layer.close(index);
+      				 $.ajax({
+      				 	url:"http://localhost:8888/sysJobLog/removeList",
+				      	method:"post",
+						data:str,
+						contentType:"application/json;charset=utf-8",
+				      	success:function(res){
+				      		 tableIns.reload();
+				      		layer.alert("删除成功");
+				      		$("#sc").addClass("disabled");
+				      	}
+      				 });
+      			 });
+      			
+		   	});
+		   	
+		   	$("#qk").on('click', function(){
+		   		layer.confirm('确定清空所有调度日志吗？', function(index){
+		   			$.ajax({
+		   				type:"get",
+		   				url:"http://localhost:8888/sysJobLog/removeFind",
+		   				success:function(res){
+				      		 tableIns.reload();
+				      		layer.alert("清空成功");
+				      	}
+		   			});
+		   		});	
+		   	});	
+		   	
+		   	$("#dc").on('click',function(){
+		   		var jobName = $('#jobName').val();
+				    var methodName=$("#methodName").val();
+				    var status=$("#status").val();
+				    var createTime=$("#test11").val();
+			    	var updateTime=$("#test12").val();
+		   		var url="?jobName="+jobName+"&methodName="+methodName+"&status="+status+"&createTime="+createTime+"&updateTime"+updateTime;
+		   		location.href="http://localhost:8888/sysJobLog/exportExcel"+url;
+		   	});
+		   	
+		   	table.on('tool(demo)', function(obj){
+		    var data = obj.data;
+		  	if(obj.event === 'remove'){
+		      layer.confirm('真的删除行么', function(index){
+		        obj.del();
+		        layer.close(index);
+			      $.ajax({
+			      	url:"http://localhost:8888/sysJobLog/remove",
+			      	data:{
+			      		id:data.jobLogId
+			      	},
+			      	success:function(res){
+			      		layer.alert("删除成功");
+			      	}
+			      });
+		      
+		      });
+		      
+		    }
+		  });
+  			
 		});
 		$(function(){
   			$("[name=showSearch]").click(function(){
