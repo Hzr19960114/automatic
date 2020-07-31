@@ -19,21 +19,21 @@
 	                        <li>
 	                           	所有项目：
 	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
-	                                <option value="">所有项目</option>
+	                                <option value="0">所有项目</option>
 	                                <option value="2">流程测试项目</option>
 	                                <option value="1">测试项目一</option>
 	                            </select>
 	                        </li>
 	                        <li>
 								参数名称：
-	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                            <input type="text"id="paramsName" value=""/>
 	                        </li>
 	                        <li>
 	                           	 参数值：
-	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                            <input type="text"id="paramsValue" value=""/>
 	                        </li>
 	                        <li>
-	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                            <a class="btn btn-primary btn-rounded btn-sm " id="find" data-type="reload"><i
 	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
 	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
 	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
@@ -45,14 +45,14 @@
 	        
 	        <div class="col-sm-12 select-table table-striped">
 	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
-	                <a class="btn btn-primary add" data-method="offset" data-type="auto">
-	                    <i class="fa fa-plus glyphicon glyphicon-plus"></i> 添加
+	                <a class="btn btn-primary add"data-method="offset" data-type="auto">
+	                    <i class="glyphicon glyphicon-plus"></i> 新增
 	                </a>
-	                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">
-	                    <i class="fa fa-edit glyphicon glyphicon-edit"></i> 修改
+	                 <a class="btn btn-success btn-edit disabled"data-method="offset" data-type="auto" id="xg"> 
+	                    <i class="glyphicon glyphicon-edit"></i> 修改
 	                </a>
-	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
-	                    <i class="fa fa-remove glyphicon glyphicon-remove"></i> 删除
+	                 <a class="btn btn-danger btn-edit disabled"data-method="offset" data-type="auto" id="sc">
+	                    <i class="glyphicon glyphicon-remove"></i> 删除
 	                </a>
 					<div class="columns columns-right btn-group pull-right">
 		        		<button class="btn btn-default btn-outline" type="button" name="showSearch" title="搜索">
@@ -67,15 +67,17 @@
 	        		</div>
 	        	</div>
 	        	
-		        <table class="layui-hide" id="test"></table>
+		        <table class="layui-hide" id="test" lay-filter="demo"></table>
 		        
 		        <div class="layui-row" id="popUpdateTest" style="display:none;">
 		    		<div class="layui-col-md10">
-		    			<form class="form-horizontal m" id="form-projectCaseParams-add" novalidate="novalidate">
+		    			<form class="form-horizontal m layui-form" id="form-projectCaseParams-add" novalidate="novalidate" lay-filter="example">
 				            <div class="form-group">	
+								<input class="form-control" type="hidden" name="paramsId" id="paramsId">
+								<input class="form-control" type="hidden" name="createTime" id="createTime">
 								<label class="col-sm-3 control-label">项目名称：</label>
 								<div class="col-sm-8">
-									<select id="projectId" name="projectId" class="form-control m-b" onchange="resetValidateForm()">
+									<select id="projectId" name="projectId" class="form-control m-b">
 									    <option value="0">所有项目</option>
 					                    <option value="2">流程测试项目</option>
 					                    <option value="1">测试项目一</option>
@@ -100,91 +102,295 @@
 									<textarea id="remark" name="remark" class="form-control" rows="8"></textarea>
 								</div>
 							</div>
+							<div class="layui-form-item">
+							    <div class="layui-input-block" style="text-align: center;">
+							    	 <button class="layui-btn" lay-submit lay-filter="update" >修改</button>
+							      	<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							    </div>
+						  	</div>
 						</form>
 		    		</div>
 		    	</div>
+		    	
+		    	<div class="layui-row" id="popCreateTest" style="display: none;">
+	        		<div class="layui-col-md10">
+				        <form class="form-horizontal m layui-form" id="form-post-add" novalidate="novalidate" lay-filter="example1">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">项目名称：</label>
+								<div class="col-sm-8">
+									<select id="projectId" name="projectId" class="form-control m-b">
+									    <option value="0">所有项目</option>
+					                    <option value="2">流程测试项目</option>
+					                    <option value="1">测试项目一</option>
+					                </select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">参数名称：</label>
+								<div class="col-sm-8">
+									<input id="paramsName" name="paramsName" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">参数值：</label>
+								<div class="col-sm-8">
+									<input id="paramsValue" name="paramsValue" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<textarea id="remark" name="remark" class="form-control" rows="8"></textarea>
+								</div>
+							</div>
+							<div class="layui-form-item">
+							    <div class="layui-input-block" style="text-align: center;">
+							    	<button class="layui-btn" lay-submit lay-filter="formDemo2" >新增</button>
+							      	<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							    </div>
+						  	</div>
+						</form>
+	        		</div>
+		        </div>
 	        </div>
 	    </div>
 	</div>
 	<script type="text/html" id="barDemo">
-	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	  <a class="btn btn-primary btn-xs" lay-event="edit"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+	  <a class="btn btn-danger btn-xs" lay-event="remove"> <i class="glyphicon glyphicon-remove"></i>删除</a>
 	</script>
 	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
 	<script>
-		layui.use('table', function(){
-		  var table = layui.table;
-		  table.render({
+		function resetForm() {
+           		$('#projectId').val("0");
+			    $("#paramsName").val("");
+			    $("#paramsValue").val("");
+        }
+		layui.use(['form', 'layedit', 'laydate'], function(){
+			  var form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  ,laydate = layui.laydate;
+			  
+			form.on('submit(formDemo2)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/pcp/create",
+					data:data.field,
+					success:function(res){
+						layer.confirm("新增成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+				return false;
+			});
+			
+			form.on('submit(update)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/pcp/update",
+					data:data.field,
+					success:function(res){
+						layer.confirm("修改成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+					return false;
+			});
+		});
+		layui.use(['table','form'], function(){
+			var form = layui.form;
+		  	var table = layui.table;
+		  	var tableIns =table.render({
 		    elem: '#test'
-		    //,url:'/demo/table/user/'
+		    ,url:'http://localhost:8888/pcp/find'
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '项目名称'}
-		      ,{field:'username', title: '参数名称'}
-		      ,{field:'sex', title: '参数值'}
-		      ,{field:'city', title: '更新者'}
-		      ,{field:'sign', title: '更新时间', sort: true}
-		      ,{field:'experience', title: '备注'}
+		      ,{field:'projectId', title: '项目名称'}
+		      ,{field:'paramsName', title: '参数名称'}
+		      ,{field:'paramsValue', title: '参数值'}
+		      ,{field:'updateBy', title: '更新者'}
+		      ,{field:'updateTime', title: '更新时间', sort: true}
+		      ,{field:'remark', title: '备注'}
 		      ,{field:'wealth', title: '操作', toolbar: '#barDemo'}
 		    ]]
-		    ,data: [{
-		      "id": "10001"
-		      ,"username": "杜甫"
-		      ,"email": "xianxin@layui.com"
-		      ,"sex": "男"
-		      ,"city": "浙江杭州"
-		      ,"sign": "人生恰似一场修行"
-		      ,"experience": "116"
-		      ,"score": "192.168.0.8"
-		      ,"classify": "108"
-		      ,"wealth": "2016-10-14"
-		    }, {
-		      "id": "10002"
-		      ,"username": "李白"
-		      ,"email": "xianxin@layui.com"
-		      ,"sex": "男"
-		      ,"city": "浙江杭州"
-		      ,"sign": "人生恰似一场修行"
-		      ,"experience": "12"
-		      ,"score": "192.168.0.8"
-		      ,"classify": "106"
-		      ,"wealth": "2016-10-14"
-		      ,"LAY_CHECKED": true
-		    }] 
-		    ,page: true
+		    ,page: { //分页设定
+	                layout: ['count', 'prev', 'page', 'next'] //自定义分页布局
+	                , curr: 1 //设定初始在第 1 页
+	                , limit: 10//每页多少数据
+	                , groups: 5 //只显示 5 个连续页码
+	        }
+		    ,parseData:function(res){
+		    	for(var i=0;i<res.list.length;i++){
+		    		if(res.list[i].projectId=="2"){
+		    			res.list[i].projectId="流程测试项目";
+		    		}else{
+		    			res.list[i].projectId="测试项目一";
+		    		}
+		    	}
+		    	return{
+		    		"code":0,
+		    		"msg":"",
+		    		"count":res.pages,
+		    		data:res.list
+		    	}
+		    }
+		    ,id: 'testReload' 
 		  });
-		});
-		layui.use('layer', function(){ //独立版的layer无需执行这一句
-			var active = {
-				offset: function(othis){
-      				var type = othis.data('type');
-	      			layer.open({
-	      				title:['添加用例公共参数','color:#333333;background-color:#f8f8f8;'], 
+		  var $ = layui.$, active = {
+		    	reload: function(){
+				   	var projectId = $('#projectId').val();
+				    var paramsName=$("#paramsName").val();
+				    var paramsValue=$("#paramsValue").val();
+			      	//执行重载
+			      	table.reload('testReload', {
+				        page: {
+				          curr: 1 //重新从第 1 页开始
+				        }
+				        ,where: {
+				        	projectId:projectId,
+				        	paramsName:paramsName,
+				        	paramsValue:paramsValue
+				        }
+					});
+				}
+			};
+			$('#find').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+		 	});
+		 	var shuju={};
+		   	table.on('checkbox(demo)', function(obj){
+		   	 var checkStatus = table.checkStatus('testReload')
+      		,data = checkStatus.data;
+		   	if(data.length==0){
+		   		$("#xg").addClass("disabled");
+		   		$("#sc").addClass("disabled");
+		  	}else if(data.length==1){
+		  		$("#xg").removeClass("disabled");
+		  		shuju=data[0];
+		    		if(shuju.projectId=="测试项目一"){
+		    			shuju.projectId="1";
+		    		}else{
+		    			shuju.projectId="2";
+		    		}
+		    	
+		  		$("#sc").removeClass("disabled");
+		  	}else{
+		  		$("#sc").removeClass("disabled");
+		  		$("#xg").addClass("disabled");	
+		  	}
+		  	});
+		  	$('.add').on('click', function(){
+			    layer.open({
+	      				title:['添加数据','color:#333333;background-color:#f8f8f8;'], 
 						type: 1
-						,area: ['800px', '676px']
+						,area: ['800px', '716px']
 				        ,shade: 0
 				        ,maxmin: true
-				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-				        ,id: 'layerDemo'+type //防止重复弹出
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo1'+"auto" //防止重复弹出
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' 
+				        ,content:$("#popCreateTest").html()
+				        ,shade: 0 //不显示遮罩
+	      			});
+	      			 form.val('example1',{
+	      			 	"dictType":sessionStorage.getItem("dictType")
+	      			 });
+			});
+			$("#xg").on('click', function(){
+  				layer.open({
+	      				title:['修改数据','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
 				        ,content:$("#popUpdateTest").html()
-				        ,btn: ['确定','取消']
-				        ,btnAlign: 'r' //按钮居中
+//				        ,btn: ['确定','关闭']
+//				        ,btnAlign: 'r' //按钮居中
+				        ,shade: 0 //不显示遮罩
+				        ,yes: function(){
+				        	
+				        }
+	      		});
+	      		form.val('example',shuju);
+	      	});
+	      	$("#sc").on('click', function(){
+		   		var checkStatus = table.checkStatus('testReload')
+	  			,data = checkStatus.data;
+	  			for(var i=0;i<data.length;i++){ 
+	  				if(data[i].projectId=="测试项目一"){
+	  					data[i].projectId=1;
+	  				}else{
+	  					data[i].projectId=2;
+	  				}
+	  			}
+	  			var str=JSON.stringify(data);
+	  			layer.confirm('确定要删除选中的'+data.length+'条数据吗？', function(index){
+	  				 layer.close(index);
+	  				 $.ajax({
+	  				 	url:"http://localhost:8888/pcp/removeList",
+				      	method:"post",
+						data:str,
+						contentType:"application/json;charset=utf-8",
+				      	success:function(res){
+				      		 tableIns.reload();
+				      		layer.alert("删除成功");
+				      	}
+	  				 });
+	  			});
+  			});
+  			table.on('tool(demo)', function(obj){
+			    var data = obj.data;
+			   		 if(data.projectId=="测试项目一"){
+		    			data.projectId="1";
+		    		}else{
+		    			data.projectId="2";
+		    		}
+			    if(obj.event === 'edit'){
+			      	layer.open({
+	      				title:['修改数据','color:#333333;background-color:#f8f8f8;'], 
+						type: 1
+						,area: ['800px', '716px']
+				        ,shade: 0
+				        ,maxmin: true
+				        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+				        ,id: 'layerDemo'+"auto" //防止重复弹出
+				        ,content:$("#popUpdateTest").html()
+	//				        ,btn: ['确定','关闭']
+	//				        ,btnAlign: 'r' //按钮居中
 				        ,shade: 0 //不显示遮罩
 				        ,yes: function(){
 				          layer.closeAll();
 				        }
 	      			});
-    			}
-			}
-			$('.add').on('click', function(){
-			    var othis = $(this), method = othis.data('method');
-			    active[method] ? active[method].call(this, othis) : '';
+		      			form.val('example',data);
+			    } else if(obj.event === 'remove'){
+			      layer.confirm('真的删除行么', function(index){
+			        obj.del();
+			        layer.close(index);
+				      $.ajax({
+				      	url:"http://localhost:8888/pcp/remove",
+				      	data:{
+				      		paramsId:data.paramsId
+				      	},
+				      	success:function(res){
+				      		layer.alert("删除成功");
+				      	}
+				      });
+			      
+			      });
+			    }
 			});
-  		});
+		});
   		
   		$(function(){
   			$("[name=showSearch]").click(function(){

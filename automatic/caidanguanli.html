@@ -19,20 +19,20 @@
 	
 	                        <li>
 								菜单名称：
-	                            <input type="text"  id="treeName" value=""/>
+	                            <input type="text"  id="menuName" value=""  name="menuName"/>
 	                        </li>
 							
 							<li>
 	                           	菜单状态：
-	                            <select id="projectId" name="projectId" onchange="initializeModuleTree()">
-	                                <option value="">所有</option>
-	                                <option value="2">正常</option>
-	                                <option value="1">停用</option>
+	                            <select id="visible" name="visible">
+	                                <option value="2">所有</option>
+	                                <option value="0">显示</option>
+	                                <option value="1">隐藏</option>
 	                            </select>
 	                       </li>
 							
 	                        <li>
-	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                            <a class="btn btn-primary btn-rounded btn-sm " id="find" data-type="reload"><i
 	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
 	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
 	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
@@ -47,7 +47,7 @@
 	                <a class="btn btn-primary add"data-method="offset" data-type="auto">
 	                    <i class="glyphicon glyphicon-plus"></i> 新增
 	                </a>
-	                 <a class="btn btn-success btn-edit disabled"data-method="offset" data-type="auto">
+	                <a class="btn btn-success btn-edit disabled" data-method="offset" data-type="auto" id="xg"> 
 	                    <i class="glyphicon glyphicon-edit"></i> 修改
 	                </a>
 	                 <a class="btn btn-info" data-method="offset" data-type="auto" id="zhankai">
@@ -73,196 +73,325 @@
 						</ul>					
 					</div>
 				</div>
-		        <table class="layui-hide" id="test" lay-filter="demoTreeTb"></table>
+				
+		        <table class="layui-hide" id="test" lay-filter="demo"></table>
+		        
+		        <div class="layui-row" id="popCreateTest" style="display:none;">
+				    <div class="layui-col-md10">
+				    	<form class="form-horizontal m layui-form" id="form-menu-add" novalidate="novalidate" lay-filter="example1">
+						<input id="treeId" name="parentId" type="hidden" value="0">
+						<div class="form-group">
+							<label class="col-sm-3 control-label ">上级菜单：</label>
+							<div class="col-sm-8">
+								<select name="parentId" id="parentId">
+									<option value=""></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">菜单类型：</label>
+							<div class="col-sm-8">
+								<input type="radio" name="menuType" value="M" checked="" title="目录" >
+								<input type="radio" name="menuType" value="C"  title="菜单" >
+								<input type="radio" name="menuType" value="F" title="按钮" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">菜单名称：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" name="menuName" id="menuName">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">请求地址：</label>
+							<div class="col-sm-8">
+								<input id="url" name="url" class="form-control" type="text">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">权限标识：</label>
+							<div class="col-sm-8">
+								<input id="perms" name="perms" class="form-control" type="text">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">显示排序：</label>
+							<div class="col-sm-8">
+								<input class="form-control"  type="text" name="orderNum">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">图标：</label>
+							<div class="col-sm-8">
+								<input id="icon" name="icon" class="form-control" type="text" placeholder="选择图标">
+			                    <div class="ms-parent" style="width: 100%;">
+			                        <div class="icon-drop animated flipInX" style="max-height: 200px; overflow-y: auto;">
+			                            <div>
+											<iframe src="tubiao.html" style="width: 100%;border: 0px;"></iframe>
+										</div>
+			                        </div>
+			                    </div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">菜单状态：</label>
+							<div class="col-sm-8">
+								<input type="radio" id="4" name="visible" value="0" checked="checked"  title="显示">	
+								<input type="radio" id="5" name="visible" value="1"  title="隐藏">				
+							</div>
+						</div>
+						<div class="layui-form-item">
+						    <div class="layui-input-block" style="text-align: center;">
+						    	 <button class="layui-btn" lay-submit lay-filter="formDemo2" >新增</button>
+						      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						    </div>
+						</div>
+					</form>
+				    </div>
+				</div>
+				
+				<div class="layui-row" id="popUpdateTest" style="display:none;">
+				    <div class="layui-col-md10">
+				    	<form class="form-horizontal m layui-form" id="form-menu-add" novalidate="novalidate" lay-filter="example">
+						<input id="treeId" name="parentId" type="hidden" value="0">
+						<div class="form-group">
+							<label class="col-sm-3 control-label ">上级菜单：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" id="treeName" name="treeName">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">菜单类型：</label>
+							<div class="col-sm-8">
+								<input type="radio" name="menuType" value="M" checked="" title="目录">
+								<input type="radio" name="menuType" value="C"  title="菜单">
+								<input type="radio" name="menuType" value="F" title="按钮">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">菜单名称：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" name="menuName" id="menuName">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">请求地址：</label>
+							<div class="col-sm-8">
+								<input id="url" name="url" class="form-control" type="text">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">权限标识：</label>
+							<div class="col-sm-8">
+								<input id="perms" name="perms" class="form-control" type="text">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">显示排序：</label>
+							<div class="col-sm-8">
+								<input class="form-control"  type="text" name="orderNum">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">图标：</label>
+							<div class="col-sm-8">
+								<input id="icon" name="icon" class="form-control" type="text" placeholder="选择图标">
+			                    <div class="ms-parent" style="width: 100%;">
+			                        <div class="icon-drop animated flipInX" style="max-height: 200px; overflow-y: auto;">
+			                            <div>
+											<iframe src="tubiao.html" style="width: 100%;border: 0px;"></iframe>
+										</div>
+			                        </div>
+			                    </div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">菜单状态：</label>
+							<div class="col-sm-8">
+								<input type="radio" id="4" name="visible" value="0" checked="checked"  title="显示">	
+								<input type="radio" id="5" name="visible" value="1"  title="隐藏">				
+							</div>
+						</div>
+						<div class="layui-form-item">
+						    <div class="layui-input-block" style="text-align: center;">
+						    	 <button class="layui-btn" lay-submit lay-filter="update" >修改</button>
+						      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						    </div>
+						</div>
+					</form>
+				    </div>
+				</div>
 	        </div>
 	    </div>
 	</div>
-	<div class="layui-row" id="popUpdateTest" style="display:none;">
-	    <div class="layui-col-md10">
-	    	<form class="form-horizontal m" id="form-menu-add" novalidate="novalidate">
-			<input id="treeId" name="parentId" type="hidden" value="0">
-			<div class="form-group">
-				<label class="col-sm-3 control-label ">上级菜单：</label>
-				<div class="col-sm-8">
-					<input class="form-control" type="text" onclick="selectMenuTree()" id="treeName" readonly="true" value="主目录">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">菜单类型：</label>
-				<div class="col-sm-8">
-					<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="menuType" value="M" ></div> 目录 </label> 
-					<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="menuType" value="C" ></div> 菜单 </label> 
-					<label class="radio-box"> <div class="iradio-blue"><input type="radio" name="menuType" value="F"></div> 按钮 </label>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">菜单名称：</label>
-				<div class="col-sm-8">
-					<input class="form-control" type="text" name="menuName" id="menuName">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">请求地址：</label>
-				<div class="col-sm-8">
-					<input id="url" name="url" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">权限标识：</label>
-				<div class="col-sm-8">
-					<input id="perms" name="perms" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">显示排序：</label>
-				<div class="col-sm-8">
-					<input class="form-control" type="text" name="orderNum">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">图标：</label>
-				<div class="col-sm-8">
-					<input id="icon" name="icon" class="form-control" type="text" placeholder="选择图标">
-                    <div class="ms-parent" style="width: 100%;">
-                        <div class="icon-drop animated flipInX" style="max-height: 200px; overflow-y: auto;">
-                            <div>
-								<iframe src="tubiao.html" style="width: 100%;border: 0px;"></iframe>
-							</div>
-                        </div>
-                    </div>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">菜单状态：</label>
-				<div class="col-sm-8">
-				    <div class="radio-box">
-						<div class="iradio-blue checked"><input type="radio" id="4" name="visible" value="0" checked="checked"> </div>
-						<label for="4" class="">显示</label>
-					</div>
-				    <div class="radio-box">
-						<div class="iradio-blue"><input type="radio" id="5" name="visible" value="1" ></div>
-						<label for="5">隐藏</label>
-					</div>
-				</div>
-			</div>
-		</form>
-	    </div>
-	</div>   
 	<script type="text/html" id="barDemo" >
-	  <a class="btn btn-primary btn-xs" lay-event="detail"><i class="glyphicon glyphicon-edit"></i>编辑</a>
-	  <a class="btn btn-info btn-xs" lay-event="edit"><i class=" glyphicon glyphicon-plus"></i>新增</a>
-	  <a class="btn btn-danger btn-xs" lay-event="del"> <i class="glyphicon glyphicon-remove"></i>删除</a>
+		<a class="btn btn-primary btn-xs" lay-event="edit"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+	  	<a class="btn btn-danger btn-xs" lay-event="remove"> <i class="glyphicon glyphicon-remove"></i>删除</a>
 	</script>
 	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
 	<script>
-		
-	
+		function resetForm() {
+       		$('#menuName').val("");
+		    $("#visible").val("2");
+        }
+		layui.use(['form', 'layedit', 'laydate'], function(){
+			  var form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  ,laydate = layui.laydate;
+			form.on('submit(formDemo2)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/menu/create",
+					data:data.field,
+					success:function(res){
+						layer.confirm("新增成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+				return false;
+			});
+			
+			form.on('submit(update)', function(data){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:8888/menu/update",
+					data:data.field,
+					success:function(res){
+						layer.confirm("修改成功!",function(){
+							location.href=location.href;
+						});
+					}
+				});
+					return false;
+			});
+		});  
 		
 		layui.config({
 				    base: 'js/'
-			}).use(['treeTable',"layer","table"], function () {
+			}).use(['treeTable',"layer","table","form"], function () {
+		  			var form = layui.form;
 				    var treeTable = layui.treeTable;
 				    var layer=layui.layer;
 				    var table=layui.table;
-					var data = [{
-						id:"1",
-					    id1: '测试管理',
-					    username: '1',
-					    sex: '#',
-					    city: '目录',
-					    city2: '显示',
-					    sign: '',
-					}, {
-					    pid: '1',
-					   	id:"1_1",
-					    id1: ' 用例管理',
-					    username: '1',
-					    sex: '/testmanagmt/projectCase	',
-					    city: '菜单',
-					    city2: '显示',
-					    sign: 'testmanagmt:projectCase:view	',
-					},{
-					    id:"2",
-					    id1: ' 测试执行',
-					    username: '2',
-					    sex: '#',
-					    city: '目录',
-					    city2: '显示',
-					    sign: '',
-					},{
-					    pid: '2',
-					    id:"2_1",
-					    id1: '任务调度',
-					    username: '1',
-					    sex: '/testexecution/taskSchedu',
-					    city: '菜单',
-					    city2: '目录',
-					    sign: 'testexecution:taskScheduling:view',
-					}];
-		
-		// 渲染表格
-		var insTb = treeTable.render({
-		    elem: '#test',
-		    data: data,  // 数据
-		    tree: {
-		        iconIndex: 1,    // 折叠图标显示在第几列
-		        isPidData: true  // 是否是pid形式数据
-		    },
-		    cols:[[
-		      {type:'radio'}
-		      ,{field:'id1', title: '菜单名称'}
-		      ,{field:'username', title: '排序'}
-		      ,{field:'sex', title: '请求地址'}
-			 ,{field:'city', title: '类型',width:70}
-		      ,{field:'city2', title: '可见',width:70}
-		      ,{field:'sign', title: '权限标识'}
-		      ,{align: 'center', toolbar: '#barDemo', title: '操作'}
-		    ]]
-		});
-		
-		   treeTable.on('tool(test)', function (obj) {
-			    var data = obj.data;
-			    if(obj.event === 'detail'){
-			     layer.open({
-				            type:1,
-				            title:"修改用户信息",
-				           	area: ['800px', '676px']
-				           	,shade: 0
-					        ,maxmin: true
-					        ,content:$("#popUpdateTest").html()
-					        ,btn: ['确定','关闭']
-					        ,btnAlign: 'r' 
-					        ,shade: 0 
-					        ,yes: function(){
-					          layer.closeAll();
-					        }
-			  	});
-			    } else if(obj.event === 'del'){
-			      layer.confirm('真的删除行么', function(index){
-			        obj.del();
-			        layer.close(index);
-			      });
-			    } else if(obj.event === 'edit'){
-			    	layer.open({
-				            type:1,
-				            title:"修改用户信息",
-				           	area: ['800px', '676px']
-				           	,shade: 0
-					        ,maxmin: true
-					        ,content:$("#popUpdateTest").html()
-					        ,btn: ['确定','关闭']
-					        ,btnAlign: 'r' 
-					        ,shade: 0 
-					        ,yes: function(){
-					          layer.closeAll();
-					        }
-			  	});
-			  }
-		});
-		
+					// 渲染表格
+					var insTb = treeTable.render({
+					    elem: '#test',
+//					    data: data,  // 数据
+					    url:'http://localhost:8888/menu/findById',
+					    method:"get",
+					    treeSpid: '0',		//最上级的父级id
+			            treeIdName: 'menuId',	//id字段的名称
+			            treePidName: 'parentId',	
+					    tree: {
+					        iconIndex: 1,    // 折叠图标显示在第几列
+					    },
+					    cols:[[
+					      {type:'radio'}
+					      ,{field:'menuName', title: '菜单名称'}
+					      ,{field:'orderNum', title: '排序',sort: true}
+					      ,{field:'url', title: '请求地址'}
+						  ,{field:'menuType', title: '类型',width:70,align:'middle'}
+					      ,{field:'visible', title: '可见',width:70,align:'middle'}
+					      ,{field:'perms', title: '权限标识'}
+					      ,{align: 'center', toolbar: '#barDemo', title: '操作'}
+					    ]]
+					    ,parseData:function(res){
+					    	return{
+					    		"code":0
+					    		,"msg":"ok"
+					    		,"data":res
+					    	}
+					    }
+					    ,done: function(res, curr, count){
+							$("[data-field='visible']").children().each(function(){
+							     if($(this).text()==0){
+							      $(this).text("显示")
+							     }else if($(this).text()==1){
+							      $(this).text("隐藏")
+							     }
+							})
+							$("[data-field='menuType']").children().each(function(){
+							     if($(this).text()=='M'){
+							      $(this).text("目录")
+							     }else if($(this).text()=='C'){
+							      $(this).text("菜单")
+							     }else if($(this).text()=='F'){
+							      $(this).text("按钮")
+							     }
+							});
+						}
+					    ,id: 'testReload'
+					});
+					var $ = layui.$, active = {
+				    	reload: function(){
+						   	var menuName = $('#menuName').val();
+						    var visible=$("#visible").val();
+					      	//执行重载
+					      	insTb.reload({
+						        where: {
+						        	menuName:menuName,
+						        	visible:visible,
+						        }
+							});
+						}
+					};
+					$('#find').on('click', function(){
+					    var type = $(this).data('type');
+					    active[type] ? active[type].call(this) : '';
+				 	});
+				 	var shuju={};
+				 	table.on('radio(demo)', function(obj){
+					   	 var radio = table.radio('testReload')
+			      		,data = radio.data;
+					   	if(data.checked=="checked"){
+					   		$("#xg").addClass("disabled");
+					  	}else{
+					  		$("#xg").removeClass("disabled");
+					  		shuju=data[0];
+					  	}
+				  	});
+					treeTable.on('tool(test)', function (obj) {
+					    var data = obj.data;
+					    if(obj.event === 'edit'){
+					     	layer.open({
+					            type:1,
+					            title:"修改用户信息",
+					           	area: ['800px', '676px']
+					           	,shade: 0
+						        ,maxmin: true
+						        ,content:$("#popUpdateTest").html()
+//							        ,btn: ['确定','关闭']
+						        ,btnAlign: 'r' 
+						        ,shade: 0 
+						        ,yes: function(){
+						          layer.closeAll();
+						        }
+					  		});
+					    } else if(obj.event === 'remove'){
+					      layer.confirm('真的删除行么', function(index){
+					        layer.close(index);
+						      $.ajax({
+						      	url:"http://localhost:8888/menu/remove",
+						      	data:{
+						      		menuId:data.menuId
+						      	},
+						      	success:function(res){
+						      		layer.alert(res);
+						      		if(res=="删除成功！"){
+					        			obj.del();
+						      		}
+						      	}
+						      });
+					      
+					      });
+					    }
+					});
+					
 		var flag=true;
 		$('#zhankai').click(function () {
             if(flag){
@@ -275,10 +404,9 @@
         });
 			
 		});
-	
 		
-		
-		layui.use('layer', function(){ //独立版的layer无需执行这一句
+		layui.use(['layer','form'], function(){ //独立版的layer无需执行这一句
+			var form=layui.form;
 			var active = {
 				offset: function(othis){
       				var type = othis.data('type');
@@ -290,12 +418,11 @@
 				        ,maxmin: true
 				        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 				        ,id: 'layerDemo'+type //防止重复弹出
-				        ,content:$("#popUpdateTest").html()
-				        ,btn: ['确定','关闭']
+				        ,content:$("#popCreateTest").html()
 				        ,btnAlign: 'r' 
 				        ,shade: 0 
 				        ,yes: function(){
-				          layer.closeAll();
+				        	layer.closeAll();
 				        }
 	      			});
     			}
@@ -303,8 +430,32 @@
 			$('.add').on('click', function(){
 			    var othis = $(this), method = othis.data('method');
 			    active[method] ? active[method].call(this, othis) : '';
+			    form.val('example1',{});
 			});
   	});
+  	
+  	layui.use('form',function(){
+		var $ = layui.jquery
+		var form = layui.form
+		    $.ajax({
+		        url: 'http://localhost:8888/menu/findByType',
+		        dataType: 'json',
+		        type: 'get',
+		        success: function(data) {
+		            if (data!== null) {
+		            	$("#parentId").empty();
+	                	$("#parentId").append(new Option("请选择上级部门", "0"));
+		                $.each(data, function(index, item) {                   
+		                    $('#parentId').append(new Option(item.menuName,item.menuId));
+		                });
+		            } else {
+		                $("#parentId").append(new Option("暂无数据", ""));
+		            }
+		            //重新渲染
+		            form.render("select");
+		        }
+		    });
+	});
   	$(function(){
   			$("[name=showSearch]").click(function(){
   				$(".search-collapse").slideToggle();

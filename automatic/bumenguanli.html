@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>菜单管理</title>
+		<title>部门名称</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
 		<link rel="stylesheet" type="text/css" href="css/style2.css"/>
 		<link rel="stylesheet" type="text/css" href="css/layui.css"/>
@@ -18,11 +18,11 @@
 	                    <ul class="list-inline">
 	                    	<li>
 								部门名称：
-	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                            <input type="text" id="treeName" value=""/>
 	                        </li>
 	                        <li>
 								权限字符：
-	                            <input type="text" onclick="selectModuleTree()" id="treeName" readonly="true" value=""/>
+	                            <input type="text" id="treeName" value=""/>
 	                        </li>
 	                        <li>
 	                           	部门状态：
@@ -52,7 +52,7 @@
 	                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">
 	                    <i class="fa fa-edit glyphicon glyphicon-edit"></i> 修改
 	                </a>
-	                <a class="btn btn-info " onclick="$.operate.removeAll()">
+	                <a class="btn btn-info" id="expandAllBtn">
 	                    <i class="fa fa-remove glyphicon glyphicon glyphicon-transfer"></i> 展开/折叠
 	                </a>
 					<div class="columns columns-right btn-group pull-right">
@@ -67,7 +67,7 @@
 		        		</button>
 	        		</div>
 	        	</div>
-		        <table class="layui-hide" id="test" lay-filter="demoTreeTb">
+		        <table class="layui-hide" id="test" id="permissionTable" lay-filter="demoTreeTb">
 		        	
 		        </table>
 		        
@@ -76,12 +76,12 @@
 	</div>
 	<div class="layui-row" id="popUpdateTest" style="display:none;">
 	    <div class="layui-col-md10">
-				        <form class="form-horizontal m" id="form-dept-add" novalidate="novalidate">
+				        <form class="form-horizontal m layui-form" id="form-dept-add" novalidate="novalidate">
 							<input id="treeId" name="parentId" type="hidden" value="100">
 							<div class="form-group">
 								<label class="col-sm-3 control-label ">上级部门：</label>
 								<div class="col-sm-8">
-									<input class="form-control" type="text" onclick="selectDeptTree()" id="treeName" readonly="true" value="LF总公司">
+									<input class="form-control" type="text" id="treeName" readonly="true" value="LF总公司">
 								</div>
 							</div>
 							<div class="form-group">
@@ -118,11 +118,11 @@
 								<label class="col-sm-3 control-label">部门状态：</label>
 								<div class="col-sm-8">
 								    <div class="radio-box">
-										<div class="iradio-blue checked"><input type="radio" id="6" name="status" value="0" checked="checked" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+										<div class="iradio-blue checked"><input type="radio" id="6" name="status" value="0" checked="checked"></div>
 										<label for="6">正常</label>
 									</div>
 								    <div class="radio-box">
-										<div class="iradio-blue"><input type="radio" id="7" name="status" value="1" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+										<div class="iradio-blue"><input type="radio" id="7" name="status" value="1"></div>
 										<label for="7">停用</label>
 									</div>
 								</div>
@@ -148,90 +148,43 @@
 				    var treeTable = layui.treeTable;
 				    var layer=layui.layer;
 				    var table=layui.table;
-				    
-/*				    // 渲染表格
-			        var renderTable = function () {//树桩表格参考文档：https://gitee.com/whvse/treetable-lay
-			            layer.load(2);
-			            treetable.render({
-			                treeColIndex: 1,//树形图标显示在第几列
-			                treeSpid: 0,//最上级的父级id
-			                treeIdName: 'permissionId',//id字段的名称
-			                treePidName: 'pid',//pid字段的名称
-			                treeDefaultClose: false,//是否默认折叠
-			                treeLinkage: true,//父级展开时是否自动展开所有子级
-			                elem: '#permissionTable',
-			                url: '${ctx}/permission/permissionTree',
-			                page: false,
-			                cols: [[
-			                    {type: 'numbers', title: '编号'},
-			                    {field: 'permissionName', title: '资源名称'},
-			                    {field: 'permissionUrl', title: '资源路径'},
-			                    {field: 'permissionType', title: '资源简介'},
-			                    {field: 'pid', title: '排序'},
-			                    {field: 'resType', title: '类型',
-			                    	templet: function(d){
-			                    		if(d.resType==0){
-			                    			return '菜单';
-			                    		}else{
-			                    			return '按钮';
-			                    		}
-			                        }	
-			                    },
-			                    {templet: complain, title: '操作'}
-			                ]],
-			                done: function () {
-			                    layer.closeAll('loading');
-			                }
-			            });
-			        };
-			        renderTable();*/
-        
-					var data = [{
-						id:"1",
-					    username: 'LF总公司',
-					    sex: '#',
-					    city: '#',
-					    sign: '#',
-					}, {
-					    pid: '1',
-					   	id:"1_1",
-					    username: '1',
-					    sex: '#',
-					    city: '#',
-					    sign: '#',
-					},{
-					    id:"2",
-					    username: '1',
-					    sex: '#',
-					    city: '#',
-					    sign: '#',
-					},{
-					    pid: '2',
-					    id:"2_1",
-					    username: '',
-					    sex: '#',
-					    city: '#',
-					    sign: '#',
-					}];
-		
-		// 渲染表格
-		var insTb = treeTable.render({
-		    elem: '#test',
-		    /*,url:'/demo/table/user/'*/
-		    data: data,  // 数据
-		    tree: {
-		        iconIndex: 1,    // 折叠图标显示在第几列
-		        isPidData: true  // 是否是pid形式数据
-		    },
-		    cols:[[
-		       {type:'checkbox'}
-		      ,{field:'id', title: '部门名称'}
-		      ,{field:'username', title: '排序'}
-		      ,{field:'sex', title: '状态'}
-		      ,{field:'city', title: '创建时间'}
-		      ,{field:'sign', title: '操作', toolbar: '#barDemo'}	
-		    ]] 
-		});
+			// 渲染表格
+			var insTb = treeTable.render({
+			    elem: '#test',
+			    url:'http://localhost:8888/dept/find',
+			    method:"get",
+			    treeSpid: '0',		//最上级的父级id
+	            treeIdName: 'deptId',	//id字段的名称
+	            treePidName: 'parentId',	
+			    parseData:function(res){
+			    	console.log(res);
+			    	return{
+			    		"code":0
+			    		,"msg":"ok"
+			    		,"data":res
+			    	}
+			    },
+			    tree: {
+			        iconIndex: 1,    // 折叠图标显示在第几列
+			    },
+			    cols:[[
+			       {type:'checkbox'}
+			      ,{field:'deptName', title: '部门名称'}
+			      ,{field:'orderNum', title: '排序'}
+			      ,{field:'status', title: '状态'}
+			      ,{field:'createTime', title: '创建时间'}
+			      ,{field:'sign', title: '操作', toolbar: '#barDemo'}	
+			    ]],
+			    done: function(res, curr, count){
+		    	$("[data-field='status']").children().each(function(){
+				     if($(this).text()==0){
+				      $(this).text("正常")
+				     }else if($(this).text()==1){
+				      $(this).text("停用")
+				     }
+				    });
+				}
+			});
 		
 		   treeTable.on('tool(test)', function (obj) {
 			    var data = obj.data;
@@ -259,11 +212,18 @@
 			  	});
 			  }
 		});
+		var flag=true;
+		$('#expandAllBtn').click(function () {
+			if(flag){
+            	insTb.expandAll('#permissionTable');
+            	flag=false;
+			}else{
+	            insTb.foldAll('#permissionTable');
+	            flag=true;
+	        }
+       	});
 			
 		});
-	
-		
-		
 		layui.use('layer', function(){ //独立版的layer无需执行这一句
 			var active = {
 				offset: function(othis){
@@ -280,8 +240,8 @@
 				        ,btn: ['确定','关闭']
 				        ,btnAlign: 'r' 
 				        ,shade: 0 
-				        ,yes: function(){
-				          layer.closeAll();
+				        ,yes: function(index){
+				        	layer.closeAll();
 				        }
 	      			});
     			}
@@ -290,14 +250,14 @@
 			    var othis = $(this), method = othis.data('method');
 			    active[method] ? active[method].call(this, othis) : '';
 			});
-  	});
-  	$(function(){
-  			$("[name=showSearch]").click(function(){
-  				$(".search-collapse").slideToggle();
-  			});
-  			$("[name=refresh]").click(function(){
-  				location.reload();
-  			});
-  		});
+	  	});
+	  	$(function(){
+	  			$("[name=showSearch]").click(function(){
+	  				$(".search-collapse").slideToggle();
+	  			});
+	  			$("[name=refresh]").click(function(){
+	  				location.reload();
+	  			});
+	  		});
 	</script>	
 </html>

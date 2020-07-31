@@ -19,16 +19,16 @@
 	
 	                        <li>
 								登录地址：
-	                            <input type="text"  id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="ipaddr" name="ipaddr" value=""/>
 	                        </li>
 	
 	                        <li>
 	                           	操作人员：
-	                            <input type="text"  id="treeName" readonly="true" value=""/>
+	                            <input type="text"  id="loginName" name="loginName" value=""/>
 	                        </li>
 	
 	                        <li>
-	                            <a class="btn btn-primary btn-rounded btn-sm " onclick="$.table.search()"><i
+	                            <a class="btn btn-primary btn-rounded btn-sm " id="find" data-type="reload"><i
 	                                    class="fa fa-search glyphicon glyphicon-search"></i>&nbsp;搜索</a>
 	                            <a class="btn btn-warning btn-rounded btn-sm" onclick="resetForm()"><i
 	                                    class="fa fa-refresh glyphicon glyphicon-refresh"></i>&nbsp;重置</a>
@@ -40,7 +40,7 @@
 	        
 	        <div class="col-sm-12 select-table table-striped">
 	        	<div class="btn-group-sm hidden-xs" id="toolbar" role="group"  style="margin-top: 14px;">
-	                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+	                <a class="btn btn-danger btn-del btn-del disabled" data-method="offset" data-type="auto" id="qt">
 	                    <i class=" glyphicon glyphicon-log-out"></i> 强退
 	                </a>
 					<div class="columns columns-right btn-group pull-right">
@@ -73,54 +73,145 @@
 							</ul>	        		
 					</div>
 				</div>
-		        <table class="layui-hide" id="test"></table>
+		        <table class="layui-hide" id="test" lay-filter="demo"></table>
 	        </div>
 	    </div>
 	</div>
 	<script type="text/html" id="barDemo">
-	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+		<a class="btn btn-danger btn-xs" lay-event="edit"><i class="glyphicon glyphicon-log-out"></i>强退</a>
 	</script>
 	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
 	<script>
+		function resetForm() {
+       		$('#ipaddr').val("");
+		    $("#loginName").val("");
+        }
 		layui.use('table', function(){
-		  var table = layui.table;
-		  table.render({
+		  	var form = layui.form;
+		  	var table = layui.table;
+		  	var tableIns =table.render({
 		    elem: '#test'
+		    ,url:"http://localhost:8888/suo/find"
 		    ,cols: [[
 		      {type:'checkbox'}
-		      ,{field:'id', title: '序号'}
-		      ,{field:'username', title: '会话编号'}
-		      ,{field:'sex', title: '登录名称',sort: true}
-		      ,{field:'city', title: '部门名称'}
-		      ,{field:'sign', title: '主机'}
-		      ,{field:'experience', title: '登录地点'}
-		      ,{field:'score', title: '浏览器'}
-		      ,{field:'classify', title: '操作系统'}
-		      ,{field:'wealth', title: '会话状态'}
-		      ,{field:'wealth1', title: '登录时间',sort: true}
-		      ,{field:'wealth2',width:150, title: '最后访问时间',sort: true}
-		      ,{field:'wealth3', title: '操作',toolbar: '#barDemo'}
+		      ,{field:'sessionid', title: '会话编号',width:318}
+		      ,{field:'loginName', title: '登录名称',width:150}
+		      ,{field:'deptName', title: '部门名称',width:150}
+		      ,{field:'ipaddr', title: '主机',width:120}
+		      ,{field:'loginLocation', title: '登录地点',width:150}
+		      ,{field:'browser', title: '浏览器',width:150}
+		      ,{field:'os', title: '操作系统',width:150}
+		      ,{field:'status', title: '会话状态',width:100,align:'middle'}
+		      ,{field:'startTimestamp', title: '登录时间',sort: true,width:200}
+		      ,{field:'lastAccessTime',width:150, title: '最后访问时间',sort: true,width:200}
+		      ,{field:'wealth3', title: '操作',toolbar: '#barDemo',width:100}
 		    ]]
-		     ,data: [{
-		      "id": "10001"
-		      ,"username": "杜甫"
-		      ,"email": "xianxin@layui.com"
-		      ,"sex": "男"
-		      ,"city": "浙江杭州"
-		      ,"sign": "人生恰似一场修行"
-		      ,"experience": "116"
-		      ,"score": "192.168.0.8"
-		      ,"classify": "108"
-		      ,"wealth": "2016-10-14"
-		      ,"wealth1": "2016-10-14"
-		      ,"wealth2": "2016-10-14"
-		    }]
-		    ,page: true
-		  });
+		    ,page: { //分页设定
+                layout: ['count', 'prev', 'page', 'next'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10//每页多少数据
+                , groups: 5 //只显示 5 个连续页码
+		    }
+		    ,parseData:function(res){
+		    	for(var i=0;i<res.list.length;i++){
+		    		if(res.list[i].status=="on_line"){
+		    			res.list[i].status="<a style='background-color: #1ab394;color: #FFFFFF;border-radius: 10px;padding: 3px 7px;'>在线</a>";
+		    		}else{
+		    			res.list[i].status="<a style='background-color: red;color: #FFFFFF;border-radius: 10px;padding: 3px 7px;'>离线</a>";
+		    		}
+			    }
+		    	return{
+		    		"code":0,
+		    		"msg":"",
+		    		"count":res.pages,
+		    		data:res.list
+		    	}
+		    }
+		    ,id: 'testReload' 
+		});
+		var $ = layui.$, active = {
+	    	reload: function(){
+			   	var ipaddr = $('#ipaddr').val();
+			    var loginName=$("#loginName").val();
+		      	//执行重载
+		      	table.reload('testReload', {
+			        page: {
+			          curr: 1 //重新从第 1 页开始
+			        }
+			        ,where: {
+			        	ipaddr:ipaddr,
+			        	loginName:loginName,
+			        }
+				});
+			}
+		};
+		$('#find').on('click', function(){
+		    var type = $(this).data('type');
+		    active[type] ? active[type].call(this) : '';
+	 	});
+	 	var shuju={};
+	   	table.on('checkbox(demo)', function(obj){
+		   	 var checkStatus = table.checkStatus('testReload')
+      		,data = checkStatus.data;
+		   	if(data.length==0){
+		   		$("#qt").addClass("disabled");
+		  	}else{
+		  		$("#qt").removeClass("disabled");
+		  		shuju=data[0];
+		  	}
+	  	});
+	  	$("#qt").on('click', function(){
+	   		var checkStatus = table.checkStatus('testReload')
+  			,data = checkStatus.data;
+  			for(var i=0;i<data.length;i++){
+	    		if(data[i].status=="在线"){
+	    			data[i].status="on_line";
+	    		}else{
+	    			data[i].status="off_line";
+	    		}
+	    	}
+  			var str=JSON.stringify(data);
+  			layer.confirm('确定要强退选中的'+data.length+'条数据吗？', function(index){
+  				 layer.close(index);
+  				 $.ajax({
+  				 	url:"http://localhost:8888/suo/removeList",
+			      	method:"post",
+					data:str,
+					contentType:"application/json;charset=utf-8",
+			      	success:function(res){
+			      		 tableIns.reload();
+			      		layer.alert("强退成功");
+			      	}
+  				 });
+  			});
+		});
+		table.on('tool(demo)', function(obj){
+			    var data = obj.data;
+	    		if(data.status=="在线"){
+	    			data.status="on_line";
+	    		}else{
+	    			data.status="off_line";
+	    		}
+			    if(obj.event === 'edit'){
+			      layer.confirm('真的强退行么', function(index){
+			        obj.del();
+			        layer.close(index);
+				      $.ajax({
+				      	url:"http://localhost:8888/suo/remove",
+				      	data:{
+				      		sessionid:data.sessionid
+				      	},
+				      	success:function(res){
+				      		layer.alert("强退成功");
+				      	}
+				      });
+			      
+			      });
+			    }
+			});
 		});
 		$(function(){
   			$("[name=showSearch]").click(function(){
